@@ -1,0 +1,144 @@
+$light: #FAFAFE;
+$dark: #16161d;
+
+:root {
+  --border1: #93b6d7;
+  --border2: #93d7b6;
+  --border3: #93b;
+}
+
+body {
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  background: $dark;
+  padding: 10vmin 5vmin;
+  font-family: -apple-system, 'Segoe UI', sans-serif;
+  user-select: none;
+}
+ul {
+  display: flex;
+  width: 100%;
+  // justify-content: space-between;
+  margin-left: auto;
+  margin-right: auto;
+  // justify-content: center;
+  height: 10vmin;
+  position: relative;
+  transition: opacity .2s ease-in, transform .2s ease-in;
+  
+}
+ul {
+  display: flex;
+  width: 100%;
+  // justify-content: space-between;
+  // margin-left: auto;
+  // margin-right: auto;
+  justify-content: center;
+  height: 10vmin;
+  position: relative;
+  transition: opacity .2s ease-in, transform .2s ease-in;
+  
+}
+
+button {
+  width: 8vmin;
+  height: 8vmin;
+  line-height: 6vmin;
+  font-size: 5vmin;
+  appearance: none;
+  background: transparent;
+  border: .5vmin solid currentColor;
+  border-radius: 50%;
+  vertical-align: middle;
+  color: $light;
+  touch-action: none;
+  
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 3px 3px $light;
+  }
+}
+
+.button-highlighted {
+  width: 8vmin;
+  height: 8vmin;
+  line-height: 6vmin;
+  font-size: 5vmin;
+  appearance: none;
+  background: transparent;
+  border: .5vmin solid currentColor;
+  border-radius: 50%;
+  vertical-align: middle;
+  color: $light;
+  touch-action: none;
+  outline: none;
+  box-shadow: 0 0 3px 3px $light;
+  
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.radios {
+  opacity: .9;
+  display: flex;
+  align-items: center;
+  width: 14rem;
+  margin: 0 auto;
+  border: .5vmin solid $light;
+  border-radius: 2rem;
+  padding: .2rem;
+  font-size: .875rem;
+  
+  p {
+    flex: 1;
+    color: $light;
+    padding-left: .5rem;
+  }
+  
+  div {
+    flex: 1;
+    input {
+      position: absolute;
+      opacity: 0;
+    }
+    label {
+      vertical-align: middle;
+      display: flex;
+      text-align: center;
+      
+      span {
+        flex: 1;
+        text-align: center;
+        border: 1px solid $dark;
+        padding: .5rem;
+        border-radius: 2rem;
+        transition: background .2s ease-in-out, color .2s ease-in-out;
+        background: $light;
+        color: $dark;
+        &:first-of-type {
+          background: $dark;
+          color: $light;
+        }
+      }
+    }
+    input:checked + label {
+      span {
+        background: $dark;
+        color: $light;
+        &:first-of-type {
+          background: $light;
+          color: $dark;
+        }
+      }
+    }
+    input:focus + label {
+      border: 1px solid #444;
+    }
+  }
+}
+
