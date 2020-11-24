@@ -10,9 +10,16 @@ import { EnigmaPlugboardComponent } from './enigma-plugboard/enigma-plugboard.co
 import { RouterModule, Routes } from '@angular/router';
 import {MatIconModule} from '@angular/material/icon';
 import {MatDialogModule} from '@angular/material/dialog';
-import { PlugboardDialogComponent } from './plugboard-dialog/plugboard-dialog.component';
+import { KeyboardComponent } from './keyboard/keyboard.component';
+import { LoadconfigDialogComponent } from './loadconfig-dialog/loadconfig-dialog.component';
+import { MatButtonModule } from '@angular/material/button';
+import { SaveconfigDialogComponent } from './saveconfig-dialog/saveconfig-dialog.component';
 
-const routes: Routes = [  { path: '', component: EnigmaComponent },
+
+// const routes: Routes = [  { path: '', component: EnigmaComponent },
+// { path: 'plugboard', component: EnigmaPlugboardComponent },]
+
+const routes: Routes = [  { path: '', component: KeyboardComponent },
 { path: 'plugboard', component: EnigmaPlugboardComponent },]
 
 @NgModule({
@@ -20,7 +27,9 @@ const routes: Routes = [  { path: '', component: EnigmaComponent },
     AppComponent,
     EnigmaComponent,
     EnigmaPlugboardComponent,
-    PlugboardDialogComponent
+    KeyboardComponent,
+    LoadconfigDialogComponent,
+    SaveconfigDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -32,8 +41,13 @@ const routes: Routes = [  { path: '', component: EnigmaComponent },
     RouterModule.forRoot(routes),
     MatIconModule,
     MatDialogModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [LoadconfigDialogComponent]
 })
 export class AppModule { }

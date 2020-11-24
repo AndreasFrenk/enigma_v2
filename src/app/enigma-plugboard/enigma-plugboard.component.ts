@@ -4,7 +4,6 @@ import { Plug } from '../plug';
 import { PlugPoint } from '../plug-point';
 import {Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { PlugboardDialogComponent } from '../plugboard-dialog/plugboard-dialog.component';
 @Component({
   selector: 'app-enigma-plugboard',
   templateUrl: './enigma-plugboard.component.html',
@@ -42,21 +41,10 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
   destroyed : boolean;
   sketch;
   constructor(private router: Router,
-    private dialog: MatDialog) {
+    ) {
     
    }
 
-   openDialog(clickedPlugPair): void {
-    let dialogRef = this.dialog.open(PlugboardDialogComponent, {
-      width: '250px',
-      data: { clickedPlugPair }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      this.openedDialog = false;
-    });
-  }
 
    
   ngOnInit() {

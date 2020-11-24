@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PlugboardDialogComponent } from './plugboard-dialog.component';
+import { SaveconfigDialogComponent } from './saveconfig-dialog.component';
 
-describe('PlugboardDialogComponent', () => {
-  let component: PlugboardDialogComponent;
-  let fixture: ComponentFixture<PlugboardDialogComponent>;
+describe('SaveconfigDialogComponent', () => {
+  let component: SaveconfigDialogComponent;
+  let fixture: ComponentFixture<SaveconfigDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PlugboardDialogComponent ]
+      declarations: [ SaveconfigDialogComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PlugboardDialogComponent);
+    fixture = TestBed.createComponent(SaveconfigDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

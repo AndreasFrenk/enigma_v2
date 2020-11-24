@@ -1,11 +1,11 @@
-
-  <form [formGroup]="WalzenSetting">
-  <mat-form-field appearance="fill">
+<div [ngStyle]="{backgroundImage:'url(../../assets/blacktexture.jpg)'}">
+  <form [formGroup]="WalzenSetting" style="color:aliceblue;">
+  <mat-form-field appearance="fill" >
     <input matInput type="number" formControlName="firstWalzeSetting" [value]="firstWalze"  class="example-right-align" min="0" max="26">
-    <span matSuffix> First Walze</span>
+    <span matSuffix > First Walze</span>
   </mat-form-field>
-  <mat-form-field appearance="fill">
-    <input matInput type="number" formControlName="secondWalzeSetting" [value]="secondWalze" class="example-right-align" min="0" max="26">
+  <mat-form-field appearance="fill" >
+    <input matInput type="number" formControlName="secondWalzeSetting" [value]="secondWalze" class="example-right-align" min="0" max="26" >
     <span matSuffix>Second Walze</span>
   </mat-form-field>
   <mat-form-field appearance="fill">
@@ -20,7 +20,7 @@
     <input #inputText id="search-box" (input)="inputCharacter(inputText.value)" />
   
   </div>
-  <div [ngStyle]="{backgroundImage:'url(../../assets/blacktexture.jpg)'}">
+  <!-- <div [ngStyle]="{backgroundImage:'url(../../assets/blacktexture.jpg)'}"> -->
     <ul>
       <div *ngFor="let char of this.firstRow; index as i;">
         <button *ngIf="!enigmaKeyboardLayout[i].light">
