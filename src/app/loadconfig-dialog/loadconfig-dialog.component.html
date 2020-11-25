@@ -1,14 +1,9 @@
-<h1 mat-dialog-title>Hi </h1>
+<h1 mat-dialog-title>Enigma Setting </h1>
 <div mat-dialog-content>
-  <p>What's your favorite animal?</p>
+  <p>Upload Your Enigma Setting</p>
 </div>
+<input type="file" (change)="upload($event)" accept=".json" />
 <div mat-dialog-actions>
-  <button mat-raised-button color="warn"  (click)="onNoClick()">No Thanks</button>
-  <button mat-raised-button color="primary" [mat-dialog-close]="" cdkFocusInitial>Ok</button>
-
-  <!-- <button mat-button>Basic</button>
-  <button mat-button color="primary">Primary</button>
-  <button mat-button color="accent">Accent</button>
-  <button mat-button color="warn">Warn</button>
-  <button mat-button disabled>Disabled</button> -->
+  <button mat-raised-button color="warn"  (click)="onNoClick()">Cancel</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Confirm</button>
 </div>

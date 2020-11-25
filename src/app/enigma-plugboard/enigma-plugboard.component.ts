@@ -4,6 +4,7 @@ import { Plug } from '../plug';
 import { PlugPoint } from '../plug-point';
 import {Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
+import { PlugboardService } from '../plugboard.service';
 @Component({
   selector: 'app-enigma-plugboard',
   templateUrl: './enigma-plugboard.component.html',
@@ -41,6 +42,7 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
   destroyed : boolean;
   sketch;
   constructor(private router: Router,
+    private plugBoardService: PlugboardService
     ) {
     
    }
@@ -304,9 +306,18 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
 navigateToKeyboard(){
   this.router.navigate(['']);
   const testarray = [];
-  for (let i = 0; i < this.plugsConnectionPairs.length; i++){
-    testarray.push(this.plugsConnectionPairs[i])
+  for (let i = 0; i < 26; i++){
+    testarray.push(i);
   }
+  for (let i = 0; i < this.plugsConnectionPairs.length; i++){
+    const connectionPair = this.plugsConnectionPairs[i];
+    testarray[connectionPair.connection_1] = connectionPair.connection_2;
+    testarray[connectionPair.connection_2] = connectionPair.connection_1;
+  }
+
+  console.log(testarray);
+
+  this.plugBoardService.setPlugboard(testarray);
 
 }
 

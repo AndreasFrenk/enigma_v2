@@ -1,10 +1,13 @@
 <h1 mat-dialog-title>Hi </h1>
 <div mat-dialog-content>
   <p>Save Settings?</p>
+  <mat-form-field>
+    <input matInput [(ngModel)]="data.name">
+  </mat-form-field>
 </div>
 <div mat-dialog-actions>
   <button mat-raised-button color="warn"  (click)="onNoClick()">No Thanks</button>
-  <button mat-raised-button color="primary" [mat-dialog-close]="" cdkFocusInitial>Ok</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
 
   <!-- <button mat-button>Basic</button>
   <button mat-button color="primary">Primary</button>
