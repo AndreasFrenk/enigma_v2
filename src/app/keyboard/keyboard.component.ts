@@ -1,12 +1,13 @@
 import { Component, HostListener, OnInit } from '@angular/core';
+import { tick } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { lookup } from 'dns';
 import p5 from 'p5';
 import { EnigmaSetting } from '../enigma-setting';
 import { LoadconfigDialogComponent } from '../loadconfig-dialog/loadconfig-dialog.component';
 import { PlugPoint } from '../plug-point';
 import { PlugboardService } from '../plugboard.service';
+import { RotorSettingsDialogComponent } from '../rotor-settings-dialog/rotor-settings-dialog.component';
 import { SaveconfigDialogComponent } from '../saveconfig-dialog/saveconfig-dialog.component';
 import { Walze } from '../walze';
 
@@ -25,18 +26,41 @@ export class KeyboardComponent implements OnInit {
   clearText;
   encryptedText;
   save_icon;
-  save_icon_x = 50;
-  save_icon_y = 200;
-  save_icon_width = 100;
-  save_icon_height = 100;
+  save_icon_x;
+  save_icon_y;
+  save_icon_width;
+  save_icon_height;
   load_icon;
-  load_icon_x = 50;
-  load_icon_y = 350;
-  load_icon_width = 100;
-  load_icon_height = 100;
+  load_icon_x;
+  load_icon_y;
+  load_icon_width;
+  load_icon_height;
+  rotorSettingsButton;
+  plugboardButton;
+  plugboardButton_width;
+  plugboardButton_height;
 
   mousePressedSaveButton = false;
   mousePressedLoadButton = false;
+
+    //https://en.wikipedia.org/wiki/Enigma_rotor_details Enigma I (first 5 rotors) & Reflector A
+    // firstRotor = "EKMFLGDQVZNTOWYHXUSPAIBRCJ";
+    firstRotorPermutation = [4, 10, 12, 5, 11, 6, 3, 16, 21, 25, 13, 19, 14, 22, 24, 7, 23, 20, 18, 15, 0, 8, 1, 17, 2, 9];
+    // secondRotorPermutation = "AJDKSIRUXBLHWTMCQGZNPYFVOE";
+    secondRotorPermutation = [0, 9, 3, 10, 18, 8, 17, 20, 23, 1, 11, 7, 22, 19, 12, 2, 16, 6, 25, 13, 15, 24, 5, 21, 14, 4];
+    // thirdRotorPermutation = "BDFHJLCPRTXVZNYEIWGAKMUSQO";
+    thirdRotorPermutation = [1, 3, 5, 7, 9, 11, 2, 15, 17, 19, 23, 21, 25, 13, 24, 4, 8, 22, 6, 0, 10, 12, 20, 18, 16, 14];
+    // fourthRotorPermutation = "ESOVPZJAYQUIRHXLNFTGKDCMWB";
+    fourthRotorPermutation = [4, 18, 14, 21, 15, 25, 9, 0, 24, 16, 20, 8, 17, 7, 23, 11, 13, 5, 19, 6, 10, 3, 2, 12, 22, 1];
+    // fifthRotorPermutation = "VZBRGITYUPSDNHLXAWMJQOFECK";
+    fifthRotorPermutation = [21, 25, 1, 17, 6, 8, 19, 24, 20, 15, 18, 3, 13, 7, 11, 23, 0, 22, 12, 9, 16, 14, 5, 4, 2, 10];
+  
+    //Reflector A 
+    // reflector = "EJMZALYXVBWFCRQUONTSPIKHGD"; 
+    reflector = [4, 9, 12, 25, 0, 11, 24, 23, 21, 1, 22, 5, 2, 17, 16, 20, 14, 13, 19, 18, 15, 8, 10, 7, 6, 3];
+
+    //Plugboard 
+    plugboard = [17,20,11,16,12,25,9,18,24,6,14,2,4,19,10,22,3,0,7,13,1,23,15,21,8,5];
 
 
     // Enigma-G G312 https://de.wikipedia.org/wiki/Enigma-Walzen
@@ -61,24 +85,39 @@ export class KeyboardComponent implements OnInit {
     keypressed : boolean;
     keyAlreadyPressed = false;
     previousHighlightedKey;
+    windowWidth;
+    windowHeight;
+    windowSizeChanged = false;
 
     firstWalzenRotor : Walze = {
-      permutation: [3, 12, 19, 22, 18, 8, 11, 17, 20, 24, 16, 13, 10, 5, 4, 9, 2, 0, 25, 1, 15, 6, 23, 14, 7, 21],
+      permutation: this.firstRotorPermutation,
       position: 11,
-      name: 'first'
+      name: 'I'
     };
 
     secondWalzenRotor : Walze = {
-      permutation: [7, 16, 25, 6, 15, 9, 19, 12, 14, 1, 11, 13, 2, 8, 5, 3, 24, 0, 22, 21, 4, 20, 18, 17, 10, 23],
+      permutation: this.secondRotorPermutation,
       position: 4,
-      name: 'second'
+      name: 'II'
     };
     
 
     thirdWalzenRotor : Walze = {
-      permutation: [20, 16, 13, 19, 11, 18, 25, 5, 12, 17, 4, 7, 3, 15, 23, 10, 8, 1, 21, 24, 6, 9, 2, 22, 14, 0],
+      permutation: this.thirdRotorPermutation,
       position: 20,
-      name: 'third'
+      name: 'III'
+    };
+
+    forthWalzenRotor : Walze = {
+      permutation: this.fourthRotorPermutation,
+      position: 20,
+      name: 'IV'
+    };
+
+    fifthWalzenRotor : Walze = {
+      permutation: this.fifthRotorPermutation,
+      position: 20,
+      name: 'V'
     };
 
 
@@ -87,12 +126,16 @@ export class KeyboardComponent implements OnInit {
       firstWalze: this.firstWalzenRotor,
       secondWalze: this.secondWalzenRotor,
       thirdWalze: this.thirdWalzenRotor,
-      umkehrWalze: this.umkehrWalzePermutation
+      plugboard: this.plugboard,
+      umkehrWalze: this.reflector
     }
 
     firstWaltzeInput;
     secondWaltzeInput;
     thirdWaltzeInput;
+    firstWaltzeInputIndex;
+    secondWaltzeInputIndex;
+    thirdWaltzeInputIndex;
     destroyed;
     
     
@@ -101,15 +144,19 @@ export class KeyboardComponent implements OnInit {
     private plugBoardService: PlugboardService) { 
   }
 
-  runThroughMachine( input ,firstRotor, secondRotor, thirdRotor, umkehrWalze){
+  runThroughMachine( input ,plugboard, firstRotor, secondRotor, thirdRotor, umkehrWalze){
     let currentNo;
-    currentNo = this.runThrough(input, firstRotor, true);
+    currentNo = plugboard[input];
+    currentNo = this.runThrough(currentNo, firstRotor, true);
     currentNo = this.runThrough(currentNo, secondRotor, true);
     currentNo = this.runThrough(currentNo, thirdRotor, true);
     currentNo = umkehrWalze[currentNo];
     currentNo = this.runThrough(currentNo, thirdRotor, false);
     currentNo = this.runThrough(currentNo, secondRotor, false);
     currentNo = this.runThrough(currentNo, firstRotor, false);
+    currentNo = plugboard[currentNo];
+
+
     return currentNo;
 
   }
@@ -138,8 +185,33 @@ export class KeyboardComponent implements OnInit {
     const userInput = input.target.value;
     filteredInput = userInput.replace(/^0+|[^\d]/g, '');
     filteredInput = parseInt(filteredInput);
+    if (isNaN(filteredInput)) {
+      filteredInput = 0;
+    }
       if (filteredInput > 26){
-        filteredInput = Math.floor(filteredInput / 1e2);
+        filteredInput = filteredInput.toString();
+        const firstdigit = filteredInput[0]; 
+        const lastdigit = filteredInput[filteredInput.length -1];
+        const newNumber = firstdigit + lastdigit; 
+        switch (filteredInput.length) {
+          case 2:
+            filteredInput = lastdigit;
+            break;
+          case 3:
+            if (parseInt(newNumber) <= 26 ){
+              filteredInput = newNumber;
+            }
+            else {
+              filteredInput = filteredInput.slice(0, filteredInput.length - 1);              
+            }
+            break;
+
+            default: 
+            while (filteredInput.length >= 3 && parseInt(filteredInput) > 26){
+              filteredInput = filteredInput.slice(0, filteredInput.length - 1);              
+            }
+          }
+        filteredInput = parseInt(filteredInput);
       }
       input.target.value = filteredInput;
       switch (walze_id) {
@@ -159,17 +231,29 @@ export class KeyboardComponent implements OnInit {
     }
 
 
-   inputCharacter(key, Walze) {
+   inputCharacter(key) {
     //rotate the Walzen with each input
-    const input = key.data;
-    console.log(key.inputType);
+    if (key.data === ' '){
+      return key.data;
+  }
+
+    const input = key.data?.replace(/[^A-Za-z]/g, '');
+    if (input === '') {
+      key.target.value = key.target.value.substring(0, key.target.value.length - 1);
+    }
     if (key.inputType === 'insertFromPaste' && typeof key.target.value !== 'undefined'){
       let encryptedText = '';
       const pastedText = key.target.value;
       for ( let i = 0; i < pastedText.length; i ++){
-        const character = pastedText.charAt(i).toUpperCase();
+        if (pastedText.charAt(i) === ' '){
+          encryptedText += pastedText.charAt(i);
+        }
+        const character = pastedText.charAt(i).replace(/[^A-Za-z]/g, '').toUpperCase();
+        if (character === '' ){
+          continue;
+        }
         const index = this.upperCaseAlp.indexOf(character);
-        const encryptedKeyIndex = this.runThroughMachine(index, this.enigmaSetting.firstWalze, this.enigmaSetting.secondWalze, this.enigmaSetting.secondWalze, this.enigmaSetting.umkehrWalze);
+        const encryptedKeyIndex = this.runThroughMachine(index, this.enigmaSetting.plugboard, this.enigmaSetting.firstWalze, this.enigmaSetting.secondWalze, this.enigmaSetting.secondWalze, this.enigmaSetting.umkehrWalze);
         const encryptedCharacter = this.upperCaseAlp[encryptedKeyIndex];
         encryptedText += encryptedCharacter;
         this.index = this.plugsPoints.findIndex(element => {
@@ -184,17 +268,16 @@ export class KeyboardComponent implements OnInit {
         this.rotateWalzen();    
     
       }
-      console.log(encryptedText);
       return encryptedText;
 
     }
-    console.log(key.target.value);
-    // if(!this.keyAlreadyPressed && key.inputType === 'insertText' && input !== ' '){
-    if(key.inputType === 'insertText' && input !== ' '){
-        console.log(input);
+
+
+  if(key.inputType === 'insertText' && input !== ''){
+
     const lastCharacter = input[input?.length - 1].toUpperCase();
     const index = this.upperCaseAlp.indexOf(lastCharacter);
-    const encryptedKeyIndex = this.runThroughMachine(index, this.enigmaSetting.firstWalze, this.enigmaSetting.secondWalze, this.enigmaSetting.secondWalze, this.enigmaSetting.umkehrWalze);
+    const encryptedKeyIndex = this.runThroughMachine(index,  this.enigmaSetting.plugboard, this.enigmaSetting.firstWalze, this.enigmaSetting.secondWalze, this.enigmaSetting.secondWalze, this.enigmaSetting.umkehrWalze);
     const encryptedCharacter = this.upperCaseAlp[encryptedKeyIndex];
     this.index = this.plugsPoints.findIndex(element => {
       if ( element.character === encryptedCharacter) {
@@ -215,18 +298,21 @@ export class KeyboardComponent implements OnInit {
 
     this.enigmaSetting.firstWalze.position += 1;
 
-    if (this.enigmaSetting.firstWalze.position >= (this.upperCaseAlp.length - 1)) {
+    if (this.enigmaSetting.firstWalze.position >= (this.upperCaseAlp.length)) {
       this.enigmaSetting.firstWalze.position =  0;
       this.enigmaSetting.secondWalze.position += 1;
     }
     
-    if (this.enigmaSetting.secondWalze.position >= (this.upperCaseAlp.length - 1)) {
+    if (this.enigmaSetting.secondWalze.position >= (this.upperCaseAlp.length)) {
       this.enigmaSetting.secondWalze.position = 0;
       this.enigmaSetting.secondWalze.position += 1;
     }
-    if (this.enigmaSetting.secondWalze.position >= (this.upperCaseAlp.length - 1)) {
+    if (this.enigmaSetting.secondWalze.position >= (this.upperCaseAlp.length)) {
       this.enigmaSetting.secondWalze.position =  0;
     }
+    this.firstWaltzeInput.value(this.enigmaSetting.firstWalze.position);
+    this.secondWaltzeInput.value(this.enigmaSetting.secondWalze.position);
+    this.thirdWaltzeInput.value(this.enigmaSetting.thirdWalze.position);
 
   }
   
@@ -237,9 +323,10 @@ export class KeyboardComponent implements OnInit {
   }
 
 
-  inputHtml(element, id, position) {
+  inputHtml(element, id, position, size) {
     element.id(id);
     element.position(position[0], position[1]);
+    element.size(size[0], size[1]);
     const walze_id = id;
     const inputElement = <HTMLInputElement>document.getElementById(id);
     inputElement.addEventListener('input', input => {
@@ -252,21 +339,12 @@ export class KeyboardComponent implements OnInit {
     //https://stackoverflow.com/questions/19706046/how-to-read-an-external-local-json-file-in-javascript credits to yordan georgiev and musicformellons
     
       const enigmaSetting = this.enigmaSetting;
-      console.log(this.enigmaSetting);
       enigmaSetting['name'] = filename;
       this.downloadJsonFile(enigmaSetting, filename);
 
     this.mousePressedSaveButton = true;
-  // }
     }
     
-    loadConfig() {
-      if (!this.mousePressedLoadButton){
-        console.log('load config');
-        this.mousePressedLoadButton = true;
-      }
-    
-    }
     // credits to https://stackoverflow.com/questions/19721439/download-json-object-as-a-file-from-browser Nam Do
     downloadJsonFile(data, filename: string){
       // Creating a blob object from non-blob data using the Blob constructor
@@ -282,52 +360,88 @@ export class KeyboardComponent implements OnInit {
   
   ngOnInit(): void {
 
-    this.enigmaSetting.umkehrWalze = this.plugBoardService.getPlugboard().length > 0 ? this.plugBoardService.getPlugboard() : this.umkehrWalzePermutation;
+    this.enigmaSetting.plugboard = this.plugBoardService.getPlugboard().length > 0 ? this.plugBoardService.getPlugboard() : this.plugboard;
     this.destroyed = false;
 
     const sketch = (s) => {
 
       s.preload = () => {
         // preload code
+        this.adjustSizes(window.innerWidth * 0.95, window.innerHeight * 0.95);
+
+        
       }
 
       s.setup = () => {
         this.bg = s.loadImage('../../assets/blacktexture.jpg');
         this.save_icon = s.loadImage('../../assets/save-icon.png');
         this.load_icon = s.loadImage('../../assets/load-icon.png');
-        s.createCanvas(s.windowWidth, s.windowHeight);
+
+        s.createCanvas(this.windowWidth, this.windowHeight);
         this.clearText = s.createElement('textarea', '');
-        this.clearText.value('')
+        this.clearText.size(this.windowWidth/5, this.windowHeight/5);
         this.clearText.id('clearText');
+        this.clearText.style('resize', 'none');
+
         const clearText = <HTMLInputElement>document.getElementById('clearText');
         this.encryptedText = s.createElement('textarea', '');
-        this.encryptedText.value('');
+        this.encryptedText.size(this.windowWidth/5, this.windowHeight/5);
         this.encryptedText.id('encryptedText');
+        this.encryptedText.attribute('disabled','');
+        this.encryptedText.style('resize', 'none');
         const encryptedText = <HTMLInputElement>document.getElementById('encryptedText');
 
         clearText.addEventListener('input', input => {
-          const encryptedKey = this.inputCharacter(input, this.firstWalze);
+          const encryptedKey = this.inputCharacter(input);
           if (typeof encryptedKey !== 'undefined') {
             encryptedText.value += encryptedKey;
           }
         });
-        this.clearText.position(s.width/4, 100);
+        this.clearText.position(this.windowWidth/4 - this.windowWidth/5 * 0.5,  this.windowHeight/8);
+        this.encryptedText.position(this.windowWidth/4 * 3 - this.windowWidth/5 * 0.5,  this.windowHeight/8);
 
-        this.encryptedText.position(s.width - s.width/4, 100);
         s.background(this.bg);
-        this.createPlugPoints(s.windowWidth, s.windowHeight);
+        this.createPlugPoints(this.windowWidth, this.windowHeight);
         this.highlightedKey = s.color(255,204,0);
         this.firstWaltzeInput = s.createElement('input', '');
-        this.inputHtml(this.firstWaltzeInput, 'firstWaltzeInput', [s.width/5, 200]);
+        this.inputHtml(this.firstWaltzeInput, 'firstWaltzeInput', [this.windowWidth/4 - 7.5, this.windowHeight/8 * 3], [15,15]);
         this.firstWaltzeInput.value(this.firstWalze);
 
         this.secondWaltzeInput = s.createInput('input', '');
-        this.inputHtml(this.secondWaltzeInput, 'secondWaltzeInput', [s.width/5 * 2, 200]);
+        this.inputHtml(this.secondWaltzeInput, 'secondWaltzeInput', [this.windowWidth/2 - 7.5, this.windowHeight/8 * 3], [15,15]);
         this.secondWaltzeInput.value(this.secondWalze);
 
         this.thirdWaltzeInput = s.createInput('');
-        this.inputHtml(this.thirdWaltzeInput, 'thirdWaltzeInput', [s.width/5 * 3, 200]);
+        this.inputHtml(this.thirdWaltzeInput, 'thirdWaltzeInput', [this.windowWidth/4 * 3 - 7.5, this.windowHeight/8 * 3], [15,15]);
         this.thirdWaltzeInput.value(this.thirdWalze);
+
+        this.rotorSettingsButton = s.createButton("Rotor Settings"); 
+        this.rotorSettingsButton.position(this.windowWidth/2 - this.plugboardButton_width/2, this.windowHeight/3 * 0.7); 
+        this.rotorSettingsButton.size(this.plugboardButton_width, this.plugboardButton_height);
+        this.rotorSettingsButton.id('rotorSettingsButton');
+        this.rotorSettingsButton.style('background-color', '#008CBA');
+        this.rotorSettingsButton.style('border-radius', '12px');
+        this.rotorSettingsButton.style('border', 'none');
+        const fontsize = (this.plugboardButton_width/8).toString() + 'px';
+        this.rotorSettingsButton.style('font-size', fontsize );
+
+        document.getElementById('rotorSettingsButton').addEventListener('click', click => {
+          this.openRotorSettingDialog();
+        });
+
+        this.plugboardButton = s.createButton("Plugboard"); 
+        this.plugboardButton.position(this.windowWidth/2 - this.plugboardButton_width/2, this.windowHeight/3 * 0.9); 
+        this.plugboardButton.size(this.plugboardButton_width, this.plugboardButton_height);
+        this.plugboardButton.id('plugboardButton');
+        this.plugboardButton.style('background-color', '#008CBA');
+        this.plugboardButton.style('border-radius', '12px');
+        this.plugboardButton.style('border', 'none');
+        // const fontsize = (this.plugboardButton_width/8).toString() + 'px';
+        this.plugboardButton.style('font-size', fontsize );
+
+        document.getElementById('plugboardButton').addEventListener('click', click => {
+          this.navigateToPlugboard();
+        });
 
       };
 
@@ -336,20 +450,50 @@ export class KeyboardComponent implements OnInit {
 
       s.draw = () => {
 
+        if (this.windowSizeChanged) {
+
+          
+          s.resizeCanvas(this.windowWidth, this.windowHeight);
+          this.adjustSizes(this.windowWidth, this.windowHeight);
+
+
+          this.createPlugPoints(this.windowWidth, this.windowHeight);
+          this.clearText.position(this.windowWidth/4 - this.windowWidth/5 * 0.5, this.windowHeight/8);
+          this.encryptedText.position(this.windowWidth/4 * 3 - this.windowWidth/5 * 0.5, this.windowHeight/8);
+  
+          this.firstWaltzeInput.position(this.windowWidth/4 - 7.5, this.windowHeight/8 * 3);
+          this.secondWaltzeInput.position(this.windowWidth/2 - 7.5,  this.windowHeight/8 * 3);
+          this.thirdWaltzeInput.position(this.windowWidth/4 * 3 - 7.5,  this.windowHeight/8 * 3);
+
+
+          this.encryptedText.size(this.windowWidth/5, this.windowHeight/5);
+          this.clearText.size(this.windowWidth/5, this.windowHeight/5);
+          const fontsize = (this.plugboardButton_width/8).toString() + 'px';
+          
+          this.rotorSettingsButton.style('font-size', fontsize );
+          this.rotorSettingsButton.size(this.plugboardButton_width, this.plugboardButton_height);
+          this.rotorSettingsButton.position(this.windowWidth/2 - this.plugboardButton_width/2, this.windowHeight/3 * 0.7); 
+
+          this.plugboardButton.style('font-size', fontsize );
+          this.plugboardButton.size(this.plugboardButton_width, this.plugboardButton_height);
+          this.plugboardButton.position(this.windowWidth/2 - this.plugboardButton_width/2, this.windowHeight/3 * 0.9); 
+
+
+
+          this.windowSizeChanged = false;
+        }
           if (this.destroyed){
           s.remove();
         }
 
         s.background(this.bg);
         s.push();
-        s.tint(255,0,255);
         s.image(this.save_icon, this.save_icon_x, this.save_icon_y, this.save_icon_width, this.save_icon_height);
         s.pop();
         s.push();
-        s.tint(255,0,255);
         s.image(this.load_icon, this.load_icon_x, this.load_icon_y, this.load_icon_width, this.load_icon_height);
         s.pop();
-        this.drawPlugPoints(s);
+        this.drawPlugPoints(s, this.windowWidth, this.windowHeight);
         if (s.mouseIsPressed){
           this.checkSaveButton(s.mouseX, s.mouseY);
           this.checkLoadButton(s.mouseX, s.mouseY);
@@ -358,19 +502,47 @@ export class KeyboardComponent implements OnInit {
           this.mousePressedSaveButton = false;
           this.mousePressedLoadButton = false;
         }
+
+        s.fill(255);
+        const textsize = this.windowWidth/50 > this.windowHeight/40 ? this.windowHeight/40 : this.windowWidth/50;
+        s.textSize(textsize);
+        s.text(this.enigmaSetting.firstWalze.name, this.windowWidth/4 - 7.5 + 2, this.windowHeight/8 * 3 - 15);
+        s.text(this.enigmaSetting.secondWalze.name, this.windowWidth/2 - 7.5 + 2, this.windowHeight/8 * 3 - 15);
+        s.text(this.enigmaSetting.thirdWalze.name, this.windowWidth/4 * 3 - 7.5 + 2, this.windowHeight/8 * 3 - 15);
         
 
 
         
       };
+
+
+
       
     }
 
     let canvas = new p5(sketch);
   }
 
+  adjustSizes(windowWidth, windowHeight) {
+    this.windowHeight = windowHeight;
+    this.windowWidth = windowWidth;
 
+    let ratio = this.windowWidth/25 > this.windowHeight/25 ? this.windowWidth/25 : this.windowHeight/25;
+    this.save_icon_width = ratio;
+    this.save_icon_height = ratio;
+    this.load_icon_width = ratio * 0.8;
+    this.load_icon_height = ratio * 0.8;
+    this.save_icon_x = this.windowWidth/2 - this.save_icon_width * 1.25;
+    this.save_icon_y = this.windowHeight/20;
+    this.load_icon_x = this.windowWidth/2 + this.load_icon_width * 0.25;
+    this.load_icon_y = this.windowHeight/20 + ratio * 0.11;
+    this.plugboardButton_height = this.windowHeight/40;
+    this.plugboardButton_width = this.windowWidth/10;
+
+
+  }
   createPlugPoints(width,height){
+    this.plugsPoints = [];
     for (let i = 0; i < this.keyboardLayout.length; i++){
       let level;
       let x;
@@ -405,19 +577,25 @@ export class KeyboardComponent implements OnInit {
   }
 }
 
-drawPlugPoints(sketch) {
+drawPlugPoints(sketch, windowWidth, windowHeight) {
+  
+  const ellipseWidth = Math.round(windowWidth/15);
+  const ellipseHeight = Math.round(windowHeight/10);
+  const radius = ellipseHeight > ellipseWidth ? ellipseWidth : ellipseHeight;
+  const fontSize = Math.round(radius/3);
   for (let i = 0; i < this.plugsPoints.length; i++){
     const plugPoint = this.plugsPoints[i];
     sketch.stroke(255);
     sketch.textAlign(sketch.CENTER, sketch.CENTER);
-    sketch.textSize(25);
+    sketch.textSize(fontSize);
     if (this.plugsPoints[i].light){
       sketch.fill(this.highlightedKey);      
     }
     else {
       sketch.fill(255,255,255);
     }
-    sketch.ellipse(plugPoint.x, plugPoint.y, 80, 80);
+
+    sketch.ellipse(plugPoint.x, plugPoint.y, radius, radius);
     sketch.fill(0,0,0);
     sketch.text(plugPoint.character, plugPoint.x, plugPoint.y);
 
@@ -441,6 +619,15 @@ handleKeyboardEventUp() {
   this.highlightkey(this.index, this.keypressed, this.previousHighlightedKey);
 }
 
+@HostListener('window:resize', ['$event'])
+onResize(event){
+  this.windowWidth = event.target.innerWidth * 0.95;
+  this.windowHeight = event.target.innerHeight * 0.95;
+  this.windowSizeChanged = true;
+}
+
+
+
 highlightkey(index, pressed, previousIndex) {
   if (pressed && typeof index !== 'undefined') {
 
@@ -450,9 +637,6 @@ highlightkey(index, pressed, previousIndex) {
       previousPlugPoint.light = false;
     }
   }
-  // if (!pressed && index){
-  //   this.plugsPoints[index].light = false;
-  // }
 }
 
 checkSaveButton(mouseX, mouseY){
@@ -465,7 +649,6 @@ checkSaveButton(mouseX, mouseY){
 checkLoadButton(mouseX, mouseY){
   if ((this.load_icon_x - this.load_icon_width < mouseX  && mouseX < this.load_icon_x + this.load_icon_width) &&
    (this.load_icon_y - this.load_icon_height < mouseY && mouseY < this.load_icon_y + this.load_icon_height)){
-    // this.loadConfig();
     this.openLoadDialog();
 
 }
@@ -473,11 +656,10 @@ checkLoadButton(mouseX, mouseY){
 }
 
 openSaveDialog(): void {
-  let test;
   if (!this.mousePressedSaveButton){
     let dialogRef = this.dialog.open(SaveconfigDialogComponent, {
       width: '250px',
-      data: { name: "test"  }
+      data: { name: "setting"  }
     });
   
     dialogRef.afterClosed().subscribe(result => {
@@ -498,21 +680,22 @@ openSaveDialog(): void {
 openLoadDialog(): void {
   if (!this.mousePressedLoadButton){
     let dialogRef = this.dialog.open(LoadconfigDialogComponent, {
-      width: '250px',
+      width: '450px',
       data: {  }
     });
   
     dialogRef.afterClosed().subscribe(result => {
 
-      // const settings = require('C:/Users/Irene/Desktop/Uni_Regensburg_Dokumente/Projekte/EnigmaV3/enigma/src/assets/enigmaSetting.json');
-      // const settings = require('C:/Users/Irene/Desktop/Uni_Regensburg_Dokumente/Projekte/EnigmaV3/enigma/src/assets/testwerweff.json');
       if (result) {
         if (Object.entries(result).length !== 0) {
+          console.log('result testen?');
           const settings = result;
           this.enigmaSetting = settings;
           this.firstWaltzeInput.value(this.enigmaSetting.firstWalze.position);
           this.secondWaltzeInput.value(this.enigmaSetting.secondWalze.position);
           this.thirdWaltzeInput.value(this.enigmaSetting.thirdWalze.position);  
+
+          this.plugBoardService.setPlugboard(settings.plugboard);
         }
       }
     });
@@ -522,7 +705,56 @@ openLoadDialog(): void {
   }
 }
 
-navigateToKeyboard(){
+openRotorSettingDialog(): void {
+  if (!this.mousePressedLoadButton){
+    let dialogRef = this.dialog.open(RotorSettingsDialogComponent, {
+      width: '250px',
+      data: { 
+        firstWalze: this.enigmaSetting.firstWalze.name,
+        secondWalze: this.enigmaSetting.secondWalze.name,
+        thirdWalze: this.enigmaSetting.thirdWalze.name,
+       }
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        if (Object.entries(result).length !== 0) {
+          let Walze = this.changeRotorsOfEnigma(result.firstWalze);
+          this.enigmaSetting.firstWalze = typeof Walze !== 'undefined' ? Walze : this.enigmaSetting.firstWalze;
+
+          Walze = this.changeRotorsOfEnigma(result.secondWalze);
+          this.enigmaSetting.secondWalze = typeof Walze !== 'undefined' ? Walze : this.enigmaSetting.secondWalze;
+
+          Walze = this.changeRotorsOfEnigma(result.thirdWalze);
+          this.enigmaSetting.thirdWalze = typeof Walze !== 'undefined' ? Walze : this.enigmaSetting.thirdWalze;
+        }
+      }
+    });
+
+    this.mousePressedLoadButton = true;
+  
+  }
+}
+
+changeRotorsOfEnigma(name){
+
+  switch(name) {
+    case 'I':
+      return this.firstWalzenRotor;
+    case 'II':
+      return this.secondWalzenRotor;
+    case 'III':
+      return this.thirdWalzenRotor;
+    case 'IV':
+      return this.forthWalzenRotor;
+    case 'V':
+      return this.fifthWalzenRotor;
+    default:
+      return;
+    }
+}
+
+navigateToPlugboard(){
   this.destroyed = true;
   this.router.navigate(['plugboard']);
 

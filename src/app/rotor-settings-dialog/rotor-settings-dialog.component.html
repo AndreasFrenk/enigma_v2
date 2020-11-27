@@ -1,0 +1,38 @@
+<h1 mat-dialog-title>Rotor Settings </h1>
+<div mat-dialog-content>
+  <p>Change Order of Rotors</p>
+</div>
+
+<h4>Basic mat-select</h4>
+<mat-form-field appearance="fill">
+  <mat-label>First Rotor</mat-label>
+  <mat-select [(value)]="data.firstWalze">
+    <mat-option></mat-option>
+    <mat-option *ngFor="let rotor of rotors" [value]="rotor.name">
+      {{rotor.name}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+<mat-form-field appearance="fill">
+  <mat-label>Second Rotor</mat-label>
+  <mat-select [(value)]="data.secondWalze">
+    <mat-option></mat-option>
+    <mat-option *ngFor="let rotor of rotors" [value]="rotor.name">
+      {{rotor.name}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+<mat-form-field appearance="fill">
+  <mat-label>Third Rotor</mat-label>
+  <mat-select [(value)]="data.thirdWalze">
+    <mat-option></mat-option>
+    <mat-option *ngFor="let rotor of rotors" [value]="rotor.name">
+      {{rotor.name}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<div mat-dialog-actions>
+  <button mat-raised-button color="warn" (click)="onNoClick()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="confirm()"  cdkFocusInitial>Confirm</button>
+</div>

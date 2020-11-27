@@ -14,8 +14,9 @@ import { KeyboardComponent } from './keyboard/keyboard.component';
 import { LoadconfigDialogComponent } from './loadconfig-dialog/loadconfig-dialog.component';
 import { MatButtonModule } from '@angular/material/button';
 import { SaveconfigDialogComponent } from './saveconfig-dialog/saveconfig-dialog.component';
-
-
+import { RotorSettingsDialogComponent } from './rotor-settings-dialog/rotor-settings-dialog.component';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
 // const routes: Routes = [  { path: '', component: EnigmaComponent },
 // { path: 'plugboard', component: EnigmaPlugboardComponent },]
 
@@ -29,7 +30,8 @@ const routes: Routes = [  { path: '', component: KeyboardComponent },
     EnigmaPlugboardComponent,
     KeyboardComponent,
     LoadconfigDialogComponent,
-    SaveconfigDialogComponent
+    SaveconfigDialogComponent,
+    RotorSettingsDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -44,7 +46,10 @@ const routes: Routes = [  { path: '', component: KeyboardComponent },
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    MatOptionModule,
+    MatSelectModule
+    
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import p5 from 'p5';
 import { Plug } from '../plug';
 import { PlugPoint } from '../plug-point';
@@ -18,7 +18,8 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
   keyboardLayout = ['Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O', 'P',
   'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L',
   'Y', 'X', 'C', 'V', 'B', 'N', 'M'];
-  umkehrWalzePermutation = [17, 20, 11, 16, 12, 25, 9, 18, 24, 6, 14, 2, 4, 19, 10, 22, 3, 0, 7, 13, 1, 23, 15, 21, 8, 5];
+  // plugboard = [17, 20, 11, 16, 12, 25, 9, 18, 24, 6, 14, 2, 4, 19, 10, 22, 3, 0, 7, 13, 1, 23, 15, 21, 8, 5];
+  plugboard = [17, 20, 11, 16, 12, 25, 9, 18, 24, 6, 14, 2, 4, 19, 10, 22, 3, 0, 7, 13, 1, 23, 15, 21, 8, 5];
   alreadyConnectedPlugs = [];
   plugsConnection = [];
   plugsPoints = [];
@@ -30,17 +31,25 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
   movingPairNo: number;
   changedPlugDone: boolean;
   openedDialog = false;
-  trash_x = 50;
-  trash_y = 200;
-  trash_width = 100;
-  trash_height = 100;
-  add_connection_x = 550;
-  add_connection_y = 200;
-  add_connection_width = 100;
-  add_connection_height = 100;
+  trash_x;
+  trash_y;
+  trash_width;
+  trash_height;
+  add_connection_x;
+  add_connection_y;
+  add_connection_width;
+  add_connection_height;
   added_connection = false;
   destroyed : boolean;
   sketch;
+  windowWidth;
+  windowHeight;
+  windowSizeChanged = false;
+  plugHeight;
+  plugWidth;
+  keyboardButton;
+  keyboardButton_width;
+  keyboardButton_height;
   constructor(private router: Router,
     private plugBoardService: PlugboardService
     ) {
@@ -50,12 +59,16 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
 
    
   ngOnInit() {
+    this.plugboard = this.plugBoardService.getPlugboard().length == 26 ? this.plugBoardService.getPlugboard() : this.plugboard;
     this.destroyed = false;
    
     this.sketch = (s) => {
   
       s.preload = () => {
         // preload code
+        this.adjustSizes(window.innerWidth, window.innerHeight);
+        this.windowSizeChanged = true;
+
       }
 
       s.setup = () => {
@@ -65,23 +78,44 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
         this.add_connection = s.loadImage('../../assets/Add-icon.png');
         s.createCanvas(s.windowWidth, s.windowHeight);
         s.background(this.bg);
-        // s.strokeWeight(this.sw);
-        // s.rect(30,30, 500,500);
-        this.createPlugPoints(s.windowWidth, s.windowHeight);
+        this.keyboardButton = s.createButton("Keyboard"); 
+        this.keyboardButton.position(this.windowWidth/2 - this.keyboardButton_width/2, this.windowHeight/3); 
+        this.keyboardButton.size(this.keyboardButton_width, this.keyboardButton_height);
+        this.keyboardButton.id('keyboardButton');
+        this.keyboardButton.style('background-color', '#008CBA');
+        this.keyboardButton.style('border-radius', '12px');
+        this.keyboardButton.style('border', 'none');
+        const fontsize = (this.keyboardButton_width/8).toString() + 'px';
+        this.keyboardButton.style('font-size', fontsize );
+
+
+        document.getElementById('keyboardButton').addEventListener('click', click => {
+          this.navigateToKeyboard();
+        });
+        this.createPlugPoints(this.windowWidth, this.windowHeight);
         this.loadConfiguredPlugPointsConnections();
-        // const button = s.createButton('Add Connection');
-        // s.textAlign(s.CENTER);
-        // button.position(s.windowWidth/2 - 50, s.windowHeight/2 - 100);
-        // button.mousePressed(this.AddConnection);
 
       };
 
       s.draw = () => {
+        if (this.windowSizeChanged) {
+          s.resizeCanvas(this.windowWidth, this.windowHeight);
+
+          this.adjustSizes(this.windowWidth, this.windowHeight);
+
+          const fontsize = (this.keyboardButton_width/8).toString() + 'px';
+          this.keyboardButton.style('font-size', fontsize );
+          this.keyboardButton.size(this.keyboardButton_width, this.keyboardButton_height);
+          this.keyboardButton.position(this.windowWidth/2 - this.keyboardButton_width/2, this.windowHeight/3); 
+          this.createPlugPoints(this.windowWidth, this.windowHeight);
+          this.loadConfiguredPlugPointsConnections();
+          this.drawConnection(s);
+          this.windowSizeChanged = false;
+        }
         if (this.destroyed){
           s.remove();
         }
         s.push();
-        s.noTint();
         s.background(this.bg);
         s.pop();
         s.push();
@@ -93,7 +127,7 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
         s.image(this.add_connection, this.add_connection_x, this.add_connection_y, this.add_connection_width, this.add_connection_height);
         s.pop();
 
-        this.drawPlugPoints(s);
+        this.drawPlugPoints(s, this.windowWidth, this.windowHeight);
         this.drawConnection(s);
         }
     }
@@ -101,8 +135,28 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
     let canvas = new p5(this.sketch);
   }
 
+  adjustSizes(windowWidth, windowHeight) {
+        this.windowHeight = windowHeight;
+        this.windowWidth = windowWidth;
+        this.keyboardButton_height = this.windowHeight/40;
+        this.keyboardButton_width = this.windowWidth/10;
+        this.plugHeight = this.windowHeight/12;
+        this.plugWidth = this.windowWidth/50;
+
+        let ratio = this.windowWidth/15 > this.windowHeight/15 ? this.windowWidth/15 : this.windowHeight/15;
+        this.trash_width = ratio;
+        this.trash_height = ratio;
+        this.add_connection_width = ratio * 0.8;
+        this.add_connection_height = ratio * 0.8;
+        this.trash_x =  this.trash_width * 1.25;
+        this.trash_y = this.windowHeight/4;
+        this.add_connection_x = this.windowWidth - this.trash_width * 2.5;
+        this.add_connection_y = this.windowHeight/4 + ratio * 0.11;
+  }
+
 
   createPlugPoints(width,height){
+    this.plugsPoints = [];
     for (let i = 0; i < this.keyboardLayout.length; i++){
       let level;
       let x;
@@ -137,15 +191,21 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
   }
 }
 
-  drawPlugPoints(sketch) {
+  drawPlugPoints(sketch, windowWidth, windowHeight) {
+    const ellipseWidth = Math.round(windowWidth/50);
+    const ellipseHeight = Math.round(windowHeight/50);
+    const radius = ellipseHeight > ellipseWidth ? ellipseWidth : ellipseHeight;
+    const fontSize = Math.round(radius);
+
     for (let i = 0; i < this.plugsPoints.length; i++){
       const plugPoint = this.plugsPoints[i];
       sketch.stroke(255);
       sketch.textAlign(sketch.CENTER, sketch.CENTER);
-      sketch.text(plugPoint.character, plugPoint.x, plugPoint.y - 20);
-      sketch.ellipse(plugPoint.x, plugPoint.y, 20, 20);
-      sketch.ellipse(plugPoint.x, plugPoint.y+30, 20, 20);
-      if ((plugPoint.x - 15 < sketch.mouseX  && sketch.mouseX < plugPoint.x + 15) && (plugPoint.y - 35 < sketch.mouseY && sketch.mouseY < plugPoint.y + 35)
+      sketch.text(plugPoint.character, plugPoint.x, plugPoint.y - this.plugHeight/2);
+      sketch.textSize(fontSize);
+      sketch.ellipse(plugPoint.x, plugPoint.y, radius, radius);
+      sketch.ellipse(plugPoint.x, plugPoint.y + windowHeight/30, radius, radius);
+      if ((plugPoint.x - this.plugWidth/2 < sketch.mouseX  && sketch.mouseX < plugPoint.x + this.plugWidth/2) && (plugPoint.y - this.plugHeight/2 < sketch.mouseY && sketch.mouseY < plugPoint.y + this.plugHeight/2)
         && this.moving && !this.plugsPoints[i].occupied && !sketch.mouseIsPressed){
           this.plugsPoints[i].occupied = true;
           this.plugsPoints[this.movingNo].occupied = false;
@@ -156,13 +216,11 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
             this.plugsConnectionPairs[this.movingPairNo].point_1 = plugPoint;
             this.plugsConnectionPairs[this.movingPairNo].connection_1 = plugPoint.letterNo;
             this.changedPlugDone = true;
-            // this.moving1 = false;
           }
           if (this.moving2) {
             this.plugsConnectionPairs[this.movingPairNo].point_2 = plugPoint;
             this.plugsConnectionPairs[this.movingPairNo].connection_2 = plugPoint.letterNo;
             this.changedPlugDone = true;
-            // this.moving2 = false;
           }
         }
     }
@@ -190,8 +248,13 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
   }
 
   loadConfiguredPlugPointsConnections(){
-    for (let i = 0; i < this.umkehrWalzePermutation.length; i++) {
-      const index = this.umkehrWalzePermutation[i];
+    this.plugsConnectionPairs = [];
+    this.plugsConnection = [];
+    for (let i = 0; i < this.plugboard.length; i++) {
+      const index = this.plugboard[i];
+      if (index === i) {
+        continue;
+      }
       if (!this.plugsConnection.includes(index) && !this.plugsConnection.includes(i)) {
         this.plugsConnection.push(index);
         this.plugsConnection.push(i);
@@ -204,7 +267,7 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
         this.plugsPoints[index].occupied = true;
         this.plugsPoints[i].occupied = true;
       }
-      if (this.plugsConnection.length >= 20) {
+      if (this.plugsConnection.length >= this.plugboard.length) {
         break;
       }
     }
@@ -227,18 +290,18 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
         const firstPlug = this.dragPlugs(1, i, plugConnection.point_1, sketch.mouseX, sketch.mouseY, sketch.mouseIsPressed)
         const secondPlug = this.dragPlugs(2, i, plugConnection.point_2, sketch.mouseX, sketch.mouseY, sketch.mouseIsPressed)
         if (firstPlug) {
-          sketch.rect(sketch.mouseX - 15, sketch.mouseY -10, 30, 70);
+          sketch.rect(sketch.mouseX - this.plugWidth/2, sketch.mouseY - this.plugHeight/3, this.plugWidth, this.plugHeight);
         }
         else {
-          sketch.rect(plugConnection.point_1.x - 15, plugConnection.point_1.y -10, 30, 70);
+          sketch.rect(plugConnection.point_1.x - this.plugWidth/2, plugConnection.point_1.y -this.plugHeight/3, this.plugWidth, this.plugHeight);
         }
         if (secondPlug) {
-          sketch.rect(sketch.mouseX - 15, sketch.mouseY -10, 30, 70);
+          sketch.rect(sketch.mouseX - this.plugWidth/2, sketch.mouseY -this.plugHeight/3, this.plugWidth, this.plugHeight);
         }
         else {
-          sketch.rect(plugConnection.point_2.x - 15, plugConnection.point_2.y -10, 30, 70);
+          sketch.rect(plugConnection.point_2.x - this.plugWidth/2, plugConnection.point_2.y -this.plugHeight/3, this.plugWidth, this.plugHeight);
         }
-        sketch.line(plugConnection.point_1.x, plugConnection.point_1.y + 25,plugConnection.point_2.x , plugConnection.point_2.y + 25);
+        sketch.line(plugConnection.point_1.x, plugConnection.point_1.y + this.plugHeight/5,plugConnection.point_2.x , plugConnection.point_2.y + this.plugHeight/5);
 
         
       }
@@ -247,7 +310,7 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
   dragPlugs(pairIndex, index, plugPoint, mouseX, mouseY, mouseIsPressed ){
     let isDragged = false;
 
-    if ((plugPoint.x - 15 < mouseX  && mouseX < plugPoint.x + 15) && (plugPoint.y - 35 < mouseY && mouseY < plugPoint.y + 35)
+    if ((plugPoint.x - this.plugWidth/2 < mouseX  && mouseX < plugPoint.x + this.plugWidth/2) && (plugPoint.y - this.plugHeight/2 < mouseY && mouseY < plugPoint.y + this.plugHeight/2)
     && mouseIsPressed && !this.moving){
       this.movingNo = plugPoint.letterNo;
       this.plugsPoints[this.movingNo].clicked = true;
@@ -304,22 +367,34 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
       this.added_connection = true;
 }
 navigateToKeyboard(){
-  this.router.navigate(['']);
-  const testarray = [];
+  this.router.navigate(['./']);
+  this.reloadplugboard();
+
+  this.plugBoardService.setPlugboard(this.plugboard);
+
+}
+
+@HostListener('window:resize', ['$event'])
+onResize(event){
+  this.windowWidth = event.target.innerWidth;
+  this.windowHeight = event.target.innerHeight;
+  this.reloadplugboard();
+  this.windowSizeChanged = true;
+}
+
+reloadplugboard() {
+  this.plugboard = [];
   for (let i = 0; i < 26; i++){
-    testarray.push(i);
+    this.plugboard.push(i);
   }
   for (let i = 0; i < this.plugsConnectionPairs.length; i++){
     const connectionPair = this.plugsConnectionPairs[i];
-    testarray[connectionPair.connection_1] = connectionPair.connection_2;
-    testarray[connectionPair.connection_2] = connectionPair.connection_1;
+    this.plugboard[connectionPair.connection_1] = connectionPair.connection_2;
+    this.plugboard[connectionPair.connection_2] = connectionPair.connection_1;
   }
-
-  console.log(testarray);
-
-  this.plugBoardService.setPlugboard(testarray);
-
 }
+
+
 
 ngOnDestroy(){
 this.destroyed = true;

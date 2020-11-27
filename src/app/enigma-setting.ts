@@ -6,4 +6,5 @@ export class EnigmaSetting {
     secondWalze: Walze;
     thirdWalze: Walze;
     umkehrWalze: any;
+    plugboard: any;
 }
