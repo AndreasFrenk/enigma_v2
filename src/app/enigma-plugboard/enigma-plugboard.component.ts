@@ -5,6 +5,7 @@ import { PlugPoint } from '../plug-point';
 import {Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { PlugboardService } from '../plugboard.service';
+import { PlugPointsService } from '../plug-points.service';
 @Component({
   selector: 'app-enigma-plugboard',
   templateUrl: './enigma-plugboard.component.html',
@@ -18,7 +19,6 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
   keyboardLayout = ['Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O', 'P',
   'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L',
   'Y', 'X', 'C', 'V', 'B', 'N', 'M'];
-  // plugboard = [17, 20, 11, 16, 12, 25, 9, 18, 24, 6, 14, 2, 4, 19, 10, 22, 3, 0, 7, 13, 1, 23, 15, 21, 8, 5];
   plugboard = [17, 20, 11, 16, 12, 25, 9, 18, 24, 6, 14, 2, 4, 19, 10, 22, 3, 0, 7, 13, 1, 23, 15, 21, 8, 5];
   alreadyConnectedPlugs = [];
   plugsConnection = [];
@@ -30,7 +30,6 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
   moving2: boolean;
   movingPairNo: number;
   changedPlugDone: boolean;
-  openedDialog = false;
   trash_x;
   trash_y;
   trash_width;
@@ -51,7 +50,8 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
   keyboardButton_width;
   keyboardButton_height;
   constructor(private router: Router,
-    private plugBoardService: PlugboardService
+    private plugBoardService: PlugboardService,
+    private plugPointsService: PlugPointsService
     ) {
     
    }
@@ -92,7 +92,8 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
         document.getElementById('keyboardButton').addEventListener('click', click => {
           this.navigateToKeyboard();
         });
-        this.createPlugPoints(this.windowWidth, this.windowHeight);
+        // this.createPlugPoints(this.windowWidth, this.windowHeight);
+        this.plugsPoints = this.plugPointsService.createPlugPoints(this.windowWidth, this.windowHeight);
         this.loadConfiguredPlugPointsConnections();
 
       };
@@ -107,7 +108,8 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
           this.keyboardButton.style('font-size', fontsize );
           this.keyboardButton.size(this.keyboardButton_width, this.keyboardButton_height);
           this.keyboardButton.position(this.windowWidth/2 - this.keyboardButton_width/2, this.windowHeight/3); 
-          this.createPlugPoints(this.windowWidth, this.windowHeight);
+          // this.createPlugPoints(this.windowWidth, this.windowHeight);
+          this.plugsPoints =  this.plugPointsService.createPlugPoints(this.windowWidth, this.windowHeight);
           this.loadConfiguredPlugPointsConnections();
           this.drawConnection(s);
           this.windowSizeChanged = false;
@@ -153,43 +155,6 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
         this.add_connection_x = this.windowWidth - this.trash_width * 2.5;
         this.add_connection_y = this.windowHeight/4 + ratio * 0.11;
   }
-
-
-  createPlugPoints(width,height){
-    this.plugsPoints = [];
-    for (let i = 0; i < this.keyboardLayout.length; i++){
-      let level;
-      let x;
-      let y;
-      if (i < 10) {
-        level = 1;
-        const rowPos = i; 
-        x = (rowPos+1.0)* width/11;
-      }
-      else if (i < 19) {
-        level = 2;
-        const rowPos = i - 10;
-        x = (rowPos+1.5)*width/11;
-      } else {
-  
-        level = 3;
-        const rowPos = i - 19;
-        x = (rowPos+2.0)*width/11;
-      }
-      y  = height/3 + level*(height*2/3)/4;
-      if(i%3 ==0){
-        y += 15; 
-       }
-       let plugPoint = new PlugPoint();
-       plugPoint.character = this.keyboardLayout[i];
-       plugPoint.letterNo = i;
-       plugPoint.occupied = false;
-       plugPoint.x = x;
-       plugPoint.y = y;
-       this.plugsPoints.push(plugPoint);
-
-  }
-}
 
   drawPlugPoints(sketch, windowWidth, windowHeight) {
     const ellipseWidth = Math.round(windowWidth/50);

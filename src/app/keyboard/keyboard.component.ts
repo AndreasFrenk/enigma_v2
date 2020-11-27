@@ -6,6 +6,7 @@ import p5 from 'p5';
 import { EnigmaSetting } from '../enigma-setting';
 import { LoadconfigDialogComponent } from '../loadconfig-dialog/loadconfig-dialog.component';
 import { PlugPoint } from '../plug-point';
+import { PlugPointsService } from '../plug-points.service';
 import { PlugboardService } from '../plugboard.service';
 import { RotorSettingsDialogComponent } from '../rotor-settings-dialog/rotor-settings-dialog.component';
 import { SaveconfigDialogComponent } from '../saveconfig-dialog/saveconfig-dialog.component';
@@ -62,25 +63,9 @@ export class KeyboardComponent implements OnInit {
     //Plugboard 
     plugboard = [17,20,11,16,12,25,9,18,24,6,14,2,4,19,10,22,3,0,7,13,1,23,15,21,8,5];
 
-
-    // Enigma-G G312 https://de.wikipedia.org/wiki/Enigma-Walzen
-    alphabet = ["ABCDEFGHIJKLMNOPQRSTUVWXYZ"];
-    // firstWaltzePermutation = "DMTWSILRUYQNKFEJCAZBPGXOHV";
-    firstWaltzePermutation = [3, 12, 19, 22, 18, 8, 11, 17, 20, 24, 16, 13, 10, 5, 4, 9, 2, 0, 25, 1, 15, 6, 23, 14, 7, 21];
-    // secondWaltzePermutation = "HQZGPJTMOBLNCIFDYAWVEUSRKX";
-    secondWaltzePermutation = [7, 16, 25, 6, 15, 9, 19, 12, 14, 1, 11, 13, 2, 8, 5, 3, 24, 0, 22, 21, 4, 20, 18, 17, 10, 23];
-    // thirdWaltzePermutation = "UQNTLSZFMREHDPXKIBVYGJCWOA";
-    thirdWaltzePermutation = [20, 16, 13, 19, 11, 18  , 25, 5, 12, 17, 4, 7, 3, 15, 23, 10, 8, 1, 21, 24, 6, 9, 2, 22, 14, 0];
-    // umkehrWalzePermutation = "RULQMZJSYGOCETKWDAHNBXPVIF";
-    umkehrWalzePermutation = [17, 20, 11, 16, 12, 25, 9, 18, 24, 6, 14, 2, 4, 19, 10, 22, 3, 0, 7, 13, 1, 23, 15, 21, 8, 5];
-  
-    lowerAlph = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
     upperCaseAlp = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
-    upperCaseAlpNumbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
-    firstWalze = 11;
-    secondWalze = 4;
-    thirdWalze = 20;
-    changeLetter: number;
+
+
     index: number;
     keypressed : boolean;
     keyAlreadyPressed = false;
@@ -133,15 +118,13 @@ export class KeyboardComponent implements OnInit {
     firstWaltzeInput;
     secondWaltzeInput;
     thirdWaltzeInput;
-    firstWaltzeInputIndex;
-    secondWaltzeInputIndex;
-    thirdWaltzeInputIndex;
     destroyed;
     
     
   constructor(public dialog: MatDialog,
     private router: Router,
-    private plugBoardService: PlugboardService) { 
+    private plugBoardService: PlugboardService,
+    private plugPointsService: PlugPointsService) { 
   }
 
   runThroughMachine( input ,plugboard, firstRotor, secondRotor, thirdRotor, umkehrWalze){
@@ -177,9 +160,6 @@ export class KeyboardComponent implements OnInit {
 
   }
 
-
-  
-
    enforcePositiveInteger(input, walze_id) {
     let filteredInput; 
     const userInput = input.target.value;
@@ -188,7 +168,7 @@ export class KeyboardComponent implements OnInit {
     if (isNaN(filteredInput)) {
       filteredInput = 0;
     }
-      if (filteredInput > 26){
+      if (filteredInput > 25){
         filteredInput = filteredInput.toString();
         const firstdigit = filteredInput[0]; 
         const lastdigit = filteredInput[filteredInput.length -1];
@@ -198,7 +178,7 @@ export class KeyboardComponent implements OnInit {
             filteredInput = lastdigit;
             break;
           case 3:
-            if (parseInt(newNumber) <= 26 ){
+            if (parseInt(newNumber) <= 25 ){
               filteredInput = newNumber;
             }
             else {
@@ -207,7 +187,7 @@ export class KeyboardComponent implements OnInit {
             break;
 
             default: 
-            while (filteredInput.length >= 3 && parseInt(filteredInput) > 26){
+            while (filteredInput.length >= 3 && parseInt(filteredInput) > 25){
               filteredInput = filteredInput.slice(0, filteredInput.length - 1);              
             }
           }
@@ -222,7 +202,7 @@ export class KeyboardComponent implements OnInit {
           this.enigmaSetting.secondWalze.position = filteredInput;
           break;
         case 'thirdWaltzeInput':
-          this.enigmaSetting.secondWalze.position = filteredInput;
+          this.enigmaSetting.thirdWalze.position = filteredInput;
           break;
         default:
           console.log('Could not find id'); 
@@ -236,10 +216,9 @@ export class KeyboardComponent implements OnInit {
     if (key.data === ' '){
       return key.data;
   }
-
     const input = key.data?.replace(/[^A-Za-z]/g, '');
     if (input === '') {
-      key.target.value = key.target.value.substring(0, key.target.value.length - 1);
+      key.target.value  = key.target.value.replace(key.data, '');
     }
     if (key.inputType === 'insertFromPaste' && typeof key.target.value !== 'undefined'){
       let encryptedText = '';
@@ -272,9 +251,7 @@ export class KeyboardComponent implements OnInit {
 
     }
 
-
   if(key.inputType === 'insertText' && input !== ''){
-
     const lastCharacter = input[input?.length - 1].toUpperCase();
     const index = this.upperCaseAlp.indexOf(lastCharacter);
     const encryptedKeyIndex = this.runThroughMachine(index,  this.enigmaSetting.plugboard, this.enigmaSetting.firstWalze, this.enigmaSetting.secondWalze, this.enigmaSetting.secondWalze, this.enigmaSetting.umkehrWalze);
@@ -401,19 +378,20 @@ export class KeyboardComponent implements OnInit {
         this.encryptedText.position(this.windowWidth/4 * 3 - this.windowWidth/5 * 0.5,  this.windowHeight/8);
 
         s.background(this.bg);
-        this.createPlugPoints(this.windowWidth, this.windowHeight);
+        // this.createPlugPoints(this.windowWidth, this.windowHeight);
+        this.plugsPoints = this.plugPointsService.createPlugPoints(this.windowWidth, this.windowHeight);
         this.highlightedKey = s.color(255,204,0);
         this.firstWaltzeInput = s.createElement('input', '');
         this.inputHtml(this.firstWaltzeInput, 'firstWaltzeInput', [this.windowWidth/4 - 7.5, this.windowHeight/8 * 3], [15,15]);
-        this.firstWaltzeInput.value(this.firstWalze);
+        this.firstWaltzeInput.value(this.enigmaSetting.firstWalze.position);
 
         this.secondWaltzeInput = s.createInput('input', '');
         this.inputHtml(this.secondWaltzeInput, 'secondWaltzeInput', [this.windowWidth/2 - 7.5, this.windowHeight/8 * 3], [15,15]);
-        this.secondWaltzeInput.value(this.secondWalze);
+        this.secondWaltzeInput.value(this.enigmaSetting.secondWalze.position);
 
         this.thirdWaltzeInput = s.createInput('');
         this.inputHtml(this.thirdWaltzeInput, 'thirdWaltzeInput', [this.windowWidth/4 * 3 - 7.5, this.windowHeight/8 * 3], [15,15]);
-        this.thirdWaltzeInput.value(this.thirdWalze);
+        this.thirdWaltzeInput.value(this.enigmaSetting.thirdWalze.position);
 
         this.rotorSettingsButton = s.createButton("Rotor Settings"); 
         this.rotorSettingsButton.position(this.windowWidth/2 - this.plugboardButton_width/2, this.windowHeight/3 * 0.7); 
@@ -436,7 +414,6 @@ export class KeyboardComponent implements OnInit {
         this.plugboardButton.style('background-color', '#008CBA');
         this.plugboardButton.style('border-radius', '12px');
         this.plugboardButton.style('border', 'none');
-        // const fontsize = (this.plugboardButton_width/8).toString() + 'px';
         this.plugboardButton.style('font-size', fontsize );
 
         document.getElementById('plugboardButton').addEventListener('click', click => {
@@ -455,9 +432,8 @@ export class KeyboardComponent implements OnInit {
           
           s.resizeCanvas(this.windowWidth, this.windowHeight);
           this.adjustSizes(this.windowWidth, this.windowHeight);
-
-
-          this.createPlugPoints(this.windowWidth, this.windowHeight);
+          
+          this.plugsPoints = this.plugPointsService.createPlugPoints(this.windowWidth, this.windowHeight);
           this.clearText.position(this.windowWidth/4 - this.windowWidth/5 * 0.5, this.windowHeight/8);
           this.encryptedText.position(this.windowWidth/4 * 3 - this.windowWidth/5 * 0.5, this.windowHeight/8);
   
@@ -510,9 +486,6 @@ export class KeyboardComponent implements OnInit {
         s.text(this.enigmaSetting.secondWalze.name, this.windowWidth/2 - 7.5 + 2, this.windowHeight/8 * 3 - 15);
         s.text(this.enigmaSetting.thirdWalze.name, this.windowWidth/4 * 3 - 7.5 + 2, this.windowHeight/8 * 3 - 15);
         
-
-
-        
       };
 
 
@@ -541,41 +514,6 @@ export class KeyboardComponent implements OnInit {
 
 
   }
-  createPlugPoints(width,height){
-    this.plugsPoints = [];
-    for (let i = 0; i < this.keyboardLayout.length; i++){
-      let level;
-      let x;
-      let y;
-      if (i < 10) {
-        level = 1;
-        const rowPos = i; 
-        x = (rowPos+1.0)* width/11;
-      }
-      else if (i < 19) {
-        level = 2;
-        const rowPos = i - 10;
-        x = (rowPos+1.5)*width/11;
-      } else {
-  
-        level = 3;
-        const rowPos = i - 19;
-        x = (rowPos+2.0)*width/11;
-      }
-      y  = height/3 + level*(height*2/3)/4;
-      if(i%3 ==0){
-        y += 15; 
-       }
-       let plugPoint = new PlugPoint();
-       plugPoint.character = this.keyboardLayout[i];
-       plugPoint.letterNo = i;
-       plugPoint.occupied = false;
-       plugPoint.x = x;
-       plugPoint.y = y;
-       this.plugsPoints.push(plugPoint);
-
-  }
-}
 
 drawPlugPoints(sketch, windowWidth, windowHeight) {
   
@@ -601,10 +539,6 @@ drawPlugPoints(sketch, windowWidth, windowHeight) {
 
   }
 }
-
-
-
-
 
 @HostListener('window:keydown', ['$event'])
 handleKeyboardEventDown() {
@@ -680,7 +614,7 @@ openSaveDialog(): void {
 openLoadDialog(): void {
   if (!this.mousePressedLoadButton){
     let dialogRef = this.dialog.open(LoadconfigDialogComponent, {
-      width: '450px',
+      width: '280px',
       data: {  }
     });
   
@@ -759,7 +693,5 @@ navigateToPlugboard(){
   this.router.navigate(['plugboard']);
 
 }
-
-
 
 }
