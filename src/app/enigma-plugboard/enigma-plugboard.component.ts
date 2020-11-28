@@ -1,9 +1,7 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import p5 from 'p5';
 import { Plug } from '../plug';
-import { PlugPoint } from '../plug-point';
 import {Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
 import { PlugboardService } from '../plugboard.service';
 import { PlugPointsService } from '../plug-points.service';
 @Component({
@@ -56,8 +54,6 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
     
    }
 
-
-   
   ngOnInit() {
     this.plugboard = this.plugBoardService.getPlugboard().length == 26 ? this.plugBoardService.getPlugboard() : this.plugboard;
     this.destroyed = false;
@@ -92,7 +88,6 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
         document.getElementById('keyboardButton').addEventListener('click', click => {
           this.navigateToKeyboard();
         });
-        // this.createPlugPoints(this.windowWidth, this.windowHeight);
         this.plugsPoints = this.plugPointsService.createPlugPoints(this.windowWidth, this.windowHeight);
         this.loadConfiguredPlugPointsConnections();
 

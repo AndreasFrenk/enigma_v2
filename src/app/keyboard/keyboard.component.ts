@@ -119,9 +119,9 @@ export class KeyboardComponent implements OnInit {
       umkehrWalze: this.reflector
     }
 
-    firstWaltzeInput;
-    secondWaltzeInput;
-    thirdWaltzeInput;
+    firstWalzeInput;
+    secondWalzeInput;
+    thirdWalzeInput;
     destroyed;
     
     
@@ -199,13 +199,13 @@ export class KeyboardComponent implements OnInit {
       }
       input.target.value = filteredInput;
       switch (walze_id) {
-        case 'firstWaltzeInput':
+        case 'firstWalzeInput':
           this.enigmaSetting.firstWalze.position = filteredInput;
           break;
-        case 'secondWaltzeInput':
+        case 'secondWalzeInput':
           this.enigmaSetting.secondWalze.position = filteredInput;
           break;
-        case 'thirdWaltzeInput':
+        case 'thirdWalzeInput':
           this.enigmaSetting.thirdWalze.position = filteredInput;
           break;
         default:
@@ -291,9 +291,9 @@ export class KeyboardComponent implements OnInit {
     if (this.enigmaSetting.secondWalze.position >= (this.upperCaseAlp.length)) {
       this.enigmaSetting.secondWalze.position =  0;
     }
-    this.firstWaltzeInput.value(this.enigmaSetting.firstWalze.position);
-    this.secondWaltzeInput.value(this.enigmaSetting.secondWalze.position);
-    this.thirdWaltzeInput.value(this.enigmaSetting.thirdWalze.position);
+    this.firstWalzeInput.value(this.enigmaSetting.firstWalze.position);
+    this.secondWalzeInput.value(this.enigmaSetting.secondWalze.position);
+    this.thirdWalzeInput.value(this.enigmaSetting.thirdWalze.position);
 
   }
   
@@ -386,17 +386,17 @@ export class KeyboardComponent implements OnInit {
         s.background(this.bg);
         this.plugsPoints = this.plugPointsService.createPlugPoints(this.windowWidth, this.windowHeight);
         this.highlightedKey = s.color(255,204,0);
-        this.firstWaltzeInput = s.createElement('input', '');
-        this.inputHtml(this.firstWaltzeInput, 'firstWaltzeInput', [this.windowWidth/4 - 11, this.windowHeight/8 * 3], [this.inputElement_width,this.inputElement_height]);
-        this.firstWaltzeInput.value(this.enigmaSetting.firstWalze.position);
+        this.firstWalzeInput = s.createElement('input', '');
+        this.inputHtml(this.firstWalzeInput, 'firstWalzeInput', [this.windowWidth/4 - 11, this.windowHeight/8 * 3], [this.inputElement_width,this.inputElement_height]);
+        this.firstWalzeInput.value(this.enigmaSetting.firstWalze.position);
 
-        this.secondWaltzeInput = s.createInput('input', '');
-        this.inputHtml(this.secondWaltzeInput, 'secondWaltzeInput', [this.windowWidth/2 - 11, this.windowHeight/8 * 3], [this.inputElement_width,this.inputElement_height]);
-        this.secondWaltzeInput.value(this.enigmaSetting.secondWalze.position);
+        this.secondWalzeInput = s.createInput('input', '');
+        this.inputHtml(this.secondWalzeInput, 'secondWalzeInput', [this.windowWidth/2 - 11, this.windowHeight/8 * 3], [this.inputElement_width,this.inputElement_height]);
+        this.secondWalzeInput.value(this.enigmaSetting.secondWalze.position);
 
-        this.thirdWaltzeInput = s.createInput('');
-        this.inputHtml(this.thirdWaltzeInput, 'thirdWaltzeInput', [this.windowWidth/4 * 3 - 11, this.windowHeight/8 * 3], [this.inputElement_width,this.inputElement_height]);
-        this.thirdWaltzeInput.value(this.enigmaSetting.thirdWalze.position);
+        this.thirdWalzeInput = s.createInput('');
+        this.inputHtml(this.thirdWalzeInput, 'thirdWalzeInput', [this.windowWidth/4 * 3 - 11, this.windowHeight/8 * 3], [this.inputElement_width,this.inputElement_height]);
+        this.thirdWalzeInput.value(this.enigmaSetting.thirdWalze.position);
 
         this.rotorSettingsButton = s.createButton("Rotor Settings"); 
         this.rotorSettingsButton.position(this.windowWidth/2 - this.plugboardButton_width/2, this.windowHeight/3 * 0.7); 
@@ -456,14 +456,9 @@ export class KeyboardComponent implements OnInit {
           this.plugboardButton.size(this.plugboardButton_width, this.plugboardButton_height);
           this.plugboardButton.position(this.windowWidth/2 - this.plugboardButton_width/2, this.windowHeight/3 * 0.9); 
 
-          // this.firstWaltzeInput.position(this.windowWidth/4 - this.inputElement_width/2, this.windowHeight/8 * 3);
-          this.firstWaltzeInput.position(this.windowWidth/4  - 11, this.windowHeight/8 * 3);
-          this.secondWaltzeInput.position(this.windowWidth/2 - 11,  this.windowHeight/8 * 3);
-          this.thirdWaltzeInput.position(this.windowWidth/4 * 3 - 11,  this.windowHeight/8 * 3);
-
-          // this.firstWaltzeInput.size(this.inputElement_width, this.inputElement_height);
-          // this.secondWaltzeInput.size(this.inputElement_width, this.inputElement_height);
-          // this.thirdWaltzeInput.size(this.inputElement_width, this.inputElement_height);
+          this.firstWalzeInput.position(this.windowWidth/4  - 11, this.windowHeight/8 * 3);
+          this.secondWalzeInput.position(this.windowWidth/2 - 11,  this.windowHeight/8 * 3);
+          this.thirdWalzeInput.position(this.windowWidth/4 * 3 - 11,  this.windowHeight/8 * 3);
 
           this.windowSizeChanged = false;
         }
@@ -518,8 +513,6 @@ export class KeyboardComponent implements OnInit {
     this.plugboardButton_height = this.windowHeight/40;
     this.plugboardButton_width = this.windowWidth/10;
 
-    // this.inputElement_height = this.windowHeight/45;
-    // this.inputElement_width = this.windowWidth/100;
     this.inputElement_height = 14;
     this.inputElement_width = 14;
 
@@ -632,9 +625,9 @@ openLoadDialog(): void {
         if (Object.entries(result).length !== 0) {
           const settings = result;
           this.enigmaSetting = settings;
-          this.firstWaltzeInput.value(this.enigmaSetting.firstWalze.position);
-          this.secondWaltzeInput.value(this.enigmaSetting.secondWalze.position);
-          this.thirdWaltzeInput.value(this.enigmaSetting.thirdWalze.position);  
+          this.firstWalzeInput.value(this.enigmaSetting.firstWalze.position);
+          this.secondWalzeInput.value(this.enigmaSetting.secondWalze.position);
+          this.thirdWalzeInput.value(this.enigmaSetting.thirdWalze.position);  
 
           this.plugBoardService.setPlugboard(settings.plugboard);
         }
