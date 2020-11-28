@@ -1,9 +1,11 @@
 import { Component, HostListener, OnInit } from '@angular/core';
+import { tick } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import p5 from 'p5';
 import { EnigmaSetting } from '../enigma-setting';
 import { LoadconfigDialogComponent } from '../loadconfig-dialog/loadconfig-dialog.component';
+import { PlugPoint } from '../plug-point';
 import { PlugPointsService } from '../plug-points.service';
 import { PlugboardService } from '../plugboard.service';
 import { RotorSettingsDialogComponent } from '../rotor-settings-dialog/rotor-settings-dialog.component';
@@ -95,7 +97,7 @@ export class KeyboardComponent implements OnInit {
       name: 'III'
     };
 
-    fourthWalzenRotor : Walze = {
+    forthWalzenRotor : Walze = {
       permutation: this.fourthRotorPermutation,
       position: 20,
       name: 'IV'
@@ -685,7 +687,7 @@ changeRotorsOfEnigma(name){
     case 'III':
       return this.thirdWalzenRotor;
     case 'IV':
-      return this.fourthWalzenRotor;
+      return this.forthWalzenRotor;
     case 'V':
       return this.fifthWalzenRotor;
     default:

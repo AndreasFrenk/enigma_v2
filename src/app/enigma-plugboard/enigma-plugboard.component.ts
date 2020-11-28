@@ -49,9 +49,6 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
   keyboardButton;
   keyboardButton_width;
   keyboardButton_height;
-  changedDetected;
-  mouseIsReleased;
-  loaded;
   constructor(private router: Router,
     private plugBoardService: PlugboardService,
     private plugPointsService: PlugPointsService
@@ -64,10 +61,6 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.plugboard = this.plugBoardService.getPlugboard().length == 26 ? this.plugBoardService.getPlugboard() : this.plugboard;
     this.destroyed = false;
-    this.changedDetected = true;
-    this.mouseIsReleased = true;
-    let loadingFrames = 0;
-    this.loaded = false;
    
     this.sketch = (s) => {
   
@@ -99,6 +92,7 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
         document.getElementById('keyboardButton').addEventListener('click', click => {
           this.navigateToKeyboard();
         });
+        // this.createPlugPoints(this.windowWidth, this.windowHeight);
         this.plugsPoints = this.plugPointsService.createPlugPoints(this.windowWidth, this.windowHeight);
         this.loadConfiguredPlugPointsConnections();
 
@@ -117,62 +111,25 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
           this.plugsPoints =  this.plugPointsService.createPlugPoints(this.windowWidth, this.windowHeight);
           this.loadConfiguredPlugPointsConnections();
           this.drawConnection(s);
-
-          s.push();
-          s.background(this.bg);
-          s.pop();
-          s.push();
-          s.tint(255,0,0);
-          s.image(this.trash, this.trash_x, this.trash_y, this.trash_width, this.trash_height);
-          s.pop();
-          s.push();
-          s.tint(0,255,0);
-          s.image(this.add_connection, this.add_connection_x, this.add_connection_y, this.add_connection_width, this.add_connection_height);
-          s.pop();
-  
-          this.drawPlugPoints(s, this.windowWidth, this.windowHeight);
-          this.drawConnection(s);
-
           this.windowSizeChanged = false;
         }
         if (this.destroyed){
           s.remove();
         }
-        
-        if (this.changedDetected) {
-          
-          s.push();
-          s.background(this.bg);
-          s.pop();
-          s.push();
-          s.tint(255,0,0);
-          s.image(this.trash, this.trash_x, this.trash_y, this.trash_width, this.trash_height);
-          s.pop();
-          s.push();
-          s.tint(0,255,0);
-          s.image(this.add_connection, this.add_connection_x, this.add_connection_y, this.add_connection_width, this.add_connection_height);
-          s.pop();
-  
-          this.drawPlugPoints(s, this.windowWidth, this.windowHeight);
-          this.drawConnection(s);
-           loadingFrames += 1;
-          if (loadingFrames > 50 && !this.loaded) {
-            this.changedDetected = false;
-            this.loaded = true;
-          }
-          if (this.mouseIsReleased  && this.loaded) {
-            this.changedDetected = false;
-          }
-          }
-        }
+        s.push();
+        s.background(this.bg);
+        s.pop();
+        s.push();
+        s.tint(255,0,0);
+        s.image(this.trash, this.trash_x, this.trash_y, this.trash_width, this.trash_height);
+        s.pop();
+        s.push();
+        s.tint(0,255,0);
+        s.image(this.add_connection, this.add_connection_x, this.add_connection_y, this.add_connection_width, this.add_connection_height);
+        s.pop();
 
-        s.mousePressed = () => {
-          this.changedDetected = true;
-          this.mouseIsReleased = false;
-        }
-
-        s.mouseReleased = () => {
-          this.mouseIsReleased = true;
+        this.drawPlugPoints(s, this.windowWidth, this.windowHeight);
+        this.drawConnection(s);
         }
     }
 
@@ -349,9 +306,11 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
       for (let i = 0; i < this.plugsPoints.length; i++){
         if (!this.plugsPoints[i].occupied) {
           if (typeof free_connection_1 === "undefined"){
+            console.log(i);
             free_connection_1 = i;
           }
           else {
+            console.log(i);
             free_connection_2 = i;
             break;
           }
@@ -364,6 +323,7 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
         connection.point_1 = this.plugsPoints[free_connection_1];
         connection.point_2 = this.plugsPoints[free_connection_2];
         this.plugsConnectionPairs.push(connection);
+        console.log(connection);
         this.plugsPoints[free_connection_1].occupied = true;
         this.plugsPoints[free_connection_2].occupied = true;
   
