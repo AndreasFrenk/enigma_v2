@@ -66,7 +66,7 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
   
       s.preload = () => {
         // preload code
-        this.adjustSizes(window.innerWidth, window.innerHeight);
+        this.adjustSizes(window.innerWidth * 0.95, window.innerHeight * 0.95);
         this.windowSizeChanged = true;
 
       }
@@ -79,13 +79,13 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
         s.createCanvas(s.windowWidth, s.windowHeight);
         s.background(this.bg);
         this.keyboardButton = s.createButton("Keyboard"); 
-        this.keyboardButton.position(this.windowWidth/2 - this.keyboardButton_width/2, this.windowHeight/3); 
+        this.keyboardButton.position(this.windowWidth/2 - this.keyboardButton_width/2, this.windowHeight/3 * 0.9); 
         this.keyboardButton.size(this.keyboardButton_width, this.keyboardButton_height);
         this.keyboardButton.id('keyboardButton');
         this.keyboardButton.style('background-color', '#008CBA');
         this.keyboardButton.style('border-radius', '12px');
         this.keyboardButton.style('border', 'none');
-        const fontsize = (this.keyboardButton_width/8).toString() + 'px';
+        const fontsize = (this.keyboardButton_width/10).toString() + 'px';
         this.keyboardButton.style('font-size', fontsize );
 
 
@@ -104,11 +104,10 @@ export class EnigmaPlugboardComponent implements OnInit, OnDestroy {
 
           this.adjustSizes(this.windowWidth, this.windowHeight);
 
-          const fontsize = (this.keyboardButton_width/8).toString() + 'px';
+          const fontsize = (this.keyboardButton_width/10).toString() + 'px';
           this.keyboardButton.style('font-size', fontsize );
           this.keyboardButton.size(this.keyboardButton_width, this.keyboardButton_height);
-          this.keyboardButton.position(this.windowWidth/2 - this.keyboardButton_width/2, this.windowHeight/3); 
-          // this.createPlugPoints(this.windowWidth, this.windowHeight);
+          this.keyboardButton.position(this.windowWidth/2 - this.keyboardButton_width/2, this.windowHeight/3 * 0.9); 
           this.plugsPoints =  this.plugPointsService.createPlugPoints(this.windowWidth, this.windowHeight);
           this.loadConfiguredPlugPointsConnections();
           this.drawConnection(s);
@@ -341,8 +340,8 @@ navigateToKeyboard(){
 
 @HostListener('window:resize', ['$event'])
 onResize(event){
-  this.windowWidth = event.target.innerWidth;
-  this.windowHeight = event.target.innerHeight;
+  this.windowWidth = event.target.innerWidth * 0.95;
+  this.windowHeight = event.target.innerHeight * 0.95;
   this.reloadplugboard();
   this.windowSizeChanged = true;
 }

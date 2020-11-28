@@ -41,8 +41,12 @@ export class KeyboardComponent implements OnInit {
   plugboardButton_width;
   plugboardButton_height;
 
+  inputElement_height;
+  inputElement_width;
+
   mousePressedSaveButton = false;
   mousePressedLoadButton = false;
+  mousePressedRotorSettingsButton = false;
 
     //https://en.wikipedia.org/wiki/Enigma_rotor_details Enigma I (first 5 rotors) & Reflector A
     // firstRotor = "EKMFLGDQVZNTOWYHXUSPAIBRCJ";
@@ -303,7 +307,13 @@ export class KeyboardComponent implements OnInit {
   inputHtml(element, id, position, size) {
     element.id(id);
     element.position(position[0], position[1]);
-    element.size(size[0], size[1]);
+    console.log(size);
+    // element.size(size[0], size[1]);
+    // element.width = size[0];
+    // element.height = size[1];
+    element.style('width', size[0].toString() + 'px');
+    element.style('height', size[1].toString() + 'px');
+    element.style('text-align','center');
     const walze_id = id;
     const inputElement = <HTMLInputElement>document.getElementById(id);
     inputElement.addEventListener('input', input => {
@@ -378,19 +388,18 @@ export class KeyboardComponent implements OnInit {
         this.encryptedText.position(this.windowWidth/4 * 3 - this.windowWidth/5 * 0.5,  this.windowHeight/8);
 
         s.background(this.bg);
-        // this.createPlugPoints(this.windowWidth, this.windowHeight);
         this.plugsPoints = this.plugPointsService.createPlugPoints(this.windowWidth, this.windowHeight);
         this.highlightedKey = s.color(255,204,0);
         this.firstWaltzeInput = s.createElement('input', '');
-        this.inputHtml(this.firstWaltzeInput, 'firstWaltzeInput', [this.windowWidth/4 - 7.5, this.windowHeight/8 * 3], [15,15]);
+        this.inputHtml(this.firstWaltzeInput, 'firstWaltzeInput', [this.windowWidth/4 - 11, this.windowHeight/8 * 3], [this.inputElement_width,this.inputElement_height]);
         this.firstWaltzeInput.value(this.enigmaSetting.firstWalze.position);
 
         this.secondWaltzeInput = s.createInput('input', '');
-        this.inputHtml(this.secondWaltzeInput, 'secondWaltzeInput', [this.windowWidth/2 - 7.5, this.windowHeight/8 * 3], [15,15]);
+        this.inputHtml(this.secondWaltzeInput, 'secondWaltzeInput', [this.windowWidth/2 - 11, this.windowHeight/8 * 3], [this.inputElement_width,this.inputElement_height]);
         this.secondWaltzeInput.value(this.enigmaSetting.secondWalze.position);
 
         this.thirdWaltzeInput = s.createInput('');
-        this.inputHtml(this.thirdWaltzeInput, 'thirdWaltzeInput', [this.windowWidth/4 * 3 - 7.5, this.windowHeight/8 * 3], [15,15]);
+        this.inputHtml(this.thirdWaltzeInput, 'thirdWaltzeInput', [this.windowWidth/4 * 3 - 11, this.windowHeight/8 * 3], [this.inputElement_width,this.inputElement_height]);
         this.thirdWaltzeInput.value(this.enigmaSetting.thirdWalze.position);
 
         this.rotorSettingsButton = s.createButton("Rotor Settings"); 
@@ -400,7 +409,7 @@ export class KeyboardComponent implements OnInit {
         this.rotorSettingsButton.style('background-color', '#008CBA');
         this.rotorSettingsButton.style('border-radius', '12px');
         this.rotorSettingsButton.style('border', 'none');
-        const fontsize = (this.plugboardButton_width/8).toString() + 'px';
+        const fontsize = (this.plugboardButton_width/10).toString() + 'px';
         this.rotorSettingsButton.style('font-size', fontsize );
 
         document.getElementById('rotorSettingsButton').addEventListener('click', click => {
@@ -437,14 +446,11 @@ export class KeyboardComponent implements OnInit {
           this.clearText.position(this.windowWidth/4 - this.windowWidth/5 * 0.5, this.windowHeight/8);
           this.encryptedText.position(this.windowWidth/4 * 3 - this.windowWidth/5 * 0.5, this.windowHeight/8);
   
-          this.firstWaltzeInput.position(this.windowWidth/4 - 7.5, this.windowHeight/8 * 3);
-          this.secondWaltzeInput.position(this.windowWidth/2 - 7.5,  this.windowHeight/8 * 3);
-          this.thirdWaltzeInput.position(this.windowWidth/4 * 3 - 7.5,  this.windowHeight/8 * 3);
 
 
           this.encryptedText.size(this.windowWidth/5, this.windowHeight/5);
           this.clearText.size(this.windowWidth/5, this.windowHeight/5);
-          const fontsize = (this.plugboardButton_width/8).toString() + 'px';
+          const fontsize = (this.plugboardButton_width/10).toString() + 'px';
           
           this.rotorSettingsButton.style('font-size', fontsize );
           this.rotorSettingsButton.size(this.plugboardButton_width, this.plugboardButton_height);
@@ -454,7 +460,14 @@ export class KeyboardComponent implements OnInit {
           this.plugboardButton.size(this.plugboardButton_width, this.plugboardButton_height);
           this.plugboardButton.position(this.windowWidth/2 - this.plugboardButton_width/2, this.windowHeight/3 * 0.9); 
 
+          // this.firstWaltzeInput.position(this.windowWidth/4 - this.inputElement_width/2, this.windowHeight/8 * 3);
+          this.firstWaltzeInput.position(this.windowWidth/4  - 11, this.windowHeight/8 * 3);
+          this.secondWaltzeInput.position(this.windowWidth/2 - 11,  this.windowHeight/8 * 3);
+          this.thirdWaltzeInput.position(this.windowWidth/4 * 3 - 11,  this.windowHeight/8 * 3);
 
+          // this.firstWaltzeInput.size(this.inputElement_width, this.inputElement_height);
+          // this.secondWaltzeInput.size(this.inputElement_width, this.inputElement_height);
+          // this.thirdWaltzeInput.size(this.inputElement_width, this.inputElement_height);
 
           this.windowSizeChanged = false;
         }
@@ -474,17 +487,14 @@ export class KeyboardComponent implements OnInit {
           this.checkSaveButton(s.mouseX, s.mouseY);
           this.checkLoadButton(s.mouseX, s.mouseY);
         }
-        else {
-          this.mousePressedSaveButton = false;
-          this.mousePressedLoadButton = false;
-        }
 
         s.fill(255);
         const textsize = this.windowWidth/50 > this.windowHeight/40 ? this.windowHeight/40 : this.windowWidth/50;
         s.textSize(textsize);
-        s.text(this.enigmaSetting.firstWalze.name, this.windowWidth/4 - 7.5 + 2, this.windowHeight/8 * 3 - 15);
-        s.text(this.enigmaSetting.secondWalze.name, this.windowWidth/2 - 7.5 + 2, this.windowHeight/8 * 3 - 15);
-        s.text(this.enigmaSetting.thirdWalze.name, this.windowWidth/4 * 3 - 7.5 + 2, this.windowHeight/8 * 3 - 15);
+        s.textAlign(s.CENTER, s.CENTER);
+        s.text(this.enigmaSetting.firstWalze.name, this.windowWidth/4  , this.windowHeight/8 * 3 * 0.95);
+        s.text(this.enigmaSetting.secondWalze.name, this.windowWidth/2 , this.windowHeight/8 * 3 * 0.95);
+        s.text(this.enigmaSetting.thirdWalze.name, this.windowWidth/4 * 3 , this.windowHeight/8 * 3 * 0.95);
         
       };
 
@@ -512,6 +522,10 @@ export class KeyboardComponent implements OnInit {
     this.plugboardButton_height = this.windowHeight/40;
     this.plugboardButton_width = this.windowWidth/10;
 
+    // this.inputElement_height = this.windowHeight/45;
+    // this.inputElement_width = this.windowWidth/100;
+    this.inputElement_height = 14;
+    this.inputElement_width = 14;
 
   }
 
@@ -590,39 +604,36 @@ checkLoadButton(mouseX, mouseY){
 }
 
 openSaveDialog(): void {
-  if (!this.mousePressedSaveButton){
+  if (!this.mousePressedRotorSettingsButton && !this.mousePressedSaveButton && !this.mousePressedLoadButton){
+    this.mousePressedSaveButton = true;  
     let dialogRef = this.dialog.open(SaveconfigDialogComponent, {
       width: '250px',
       data: { name: "setting"  }
     });
   
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      console.log(result?.name);
       if (result) {
         this.saveConfig(result.name);
       }
-
+      this.mousePressedSaveButton = false;  
     });
-
-    this.mousePressedSaveButton = true;
   
   }
 }
 
 
 openLoadDialog(): void {
-  if (!this.mousePressedLoadButton){
+  if (!this.mousePressedRotorSettingsButton && !this.mousePressedSaveButton && !this.mousePressedLoadButton){
+    this.mousePressedLoadButton = true;
     let dialogRef = this.dialog.open(LoadconfigDialogComponent, {
       width: '280px',
       data: {  }
     });
   
     dialogRef.afterClosed().subscribe(result => {
-
+      this.mousePressedLoadButton = false;
       if (result) {
         if (Object.entries(result).length !== 0) {
-          console.log('result testen?');
           const settings = result;
           this.enigmaSetting = settings;
           this.firstWaltzeInput.value(this.enigmaSetting.firstWalze.position);
@@ -634,13 +645,15 @@ openLoadDialog(): void {
       }
     });
 
-    this.mousePressedLoadButton = true;
+
+    
   
   }
 }
 
 openRotorSettingDialog(): void {
-  if (!this.mousePressedLoadButton){
+    if (!this.mousePressedRotorSettingsButton && !this.mousePressedSaveButton && !this.mousePressedLoadButton){
+      this.mousePressedRotorSettingsButton = true;
     let dialogRef = this.dialog.open(RotorSettingsDialogComponent, {
       width: '250px',
       data: { 
@@ -651,6 +664,7 @@ openRotorSettingDialog(): void {
     });
   
     dialogRef.afterClosed().subscribe(result => {
+      this.mousePressedRotorSettingsButton = false;
       if (result) {
         if (Object.entries(result).length !== 0) {
           let Walze = this.changeRotorsOfEnigma(result.firstWalze);
@@ -663,10 +677,7 @@ openRotorSettingDialog(): void {
           this.enigmaSetting.thirdWalze = typeof Walze !== 'undefined' ? Walze : this.enigmaSetting.thirdWalze;
         }
       }
-    });
-
-    this.mousePressedLoadButton = true;
-  
+    });  
   }
 }
 
