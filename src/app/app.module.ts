@@ -51,6 +51,6 @@ const routes: Routes = [  { path: '', component: KeyboardComponent },
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [LoadconfigDialogComponent]
+  entryComponents: [LoadconfigDialogComponent, RotorSettingsDialogComponent, SaveconfigDialogComponent]
 })
 export class AppModule { }

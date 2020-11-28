@@ -307,10 +307,6 @@ export class KeyboardComponent implements OnInit {
   inputHtml(element, id, position, size) {
     element.id(id);
     element.position(position[0], position[1]);
-    console.log(size);
-    // element.size(size[0], size[1]);
-    // element.width = size[0];
-    // element.height = size[1];
     element.style('width', size[0].toString() + 'px');
     element.style('height', size[1].toString() + 'px');
     element.style('text-align','center');
