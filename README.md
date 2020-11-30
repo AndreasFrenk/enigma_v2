@@ -25,3 +25,9 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+## Project description
+
+This project is meant to a copy of the Enigma machine used by the Germans during World War II. It was an encryption device that allowed secret communication. 
+
+![Alt text](./enigma.png?raw=true "Title")
