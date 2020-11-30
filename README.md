@@ -50,13 +50,10 @@ Pictures from https://en.wikipedia.org/wiki/Enigma_machine && https://pixabay.co
 
 <a href="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma-how-to-use.PNG"><img src="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma-how-to-use.PNG" align="center" height="380" width="680" ></a>
 
-1. & 2. & 3. Rotor Setting.
-4. Change Order of Rotors
-5. Navigate to Plugboard
-6. Save current Settings
-7. Upload Settings
-8. Clear Text
-9. Encrypted Text
+1. 1 & 2 & 3 Rotor Setting. 4 Change Order of Rotors
+2. 5 Navigate to Plugboard
+4. 6 Save Current Settings & 7 Upload Settings
+5. 8 Clear Text & 9 Encrypted Text
 
 
 <a href="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma-plugboard-how-to-use.PNG"><img src="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma-plugboard-how-to-use.PNG" align="center" height="380" width="680" ></a>
