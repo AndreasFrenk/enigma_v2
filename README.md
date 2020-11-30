@@ -33,6 +33,10 @@ This project is meant to be a copy of the Enigma machine used by the Germans dur
 <a href="url"><img src="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma.jpg" align="left" height="580" width="380" ></a>
 
 The basic idea was that before you type your secret message you would determine the setting. There are three rotors that can be configured. There were five rotors to choose from. 
-The order of the rotors could be altered as well. Each time a key was pressed one rotor rotated. Thus, the same key would result into different encryption. I.e. "AA" would be encrypted to "GE". This enhanced the security. 
+The order of the rotors could be altered as well. Each time a key was pressed one rotor rotated. Thus, the same key would result into different encryption. I.e. "AA" would be encrypted to "GE". This enhanced the security. Once one rotator made a whole revolution the next rotator rotated once. This system is similiar to the hands of a clock.
 
 <a href="url"><img src="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma-rotors.jpg" align="left" height="580" width="380" ></a>
+
+Furthermore, there was a plugboard that swapped letters. 
+
+<a href="url"><img src="https://en.wikipedia.org/wiki/Enigma_machine#/media/File:Enigma-plugboard.jpg" align="left" height="580" width="380" ></a>
