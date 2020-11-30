@@ -30,16 +30,16 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 This project is meant to be a copy of the Enigma machine used by the Germans during World War II. It was an encryption device that allowed secret communication. 
 
-<a href="url"><img src="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma.jpg" align="center" height="580" width="380" ></a>
+<a href="url"><img src="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma.jpg" align="center" height="480" width="480" ></a>
 
 The basic idea was that before you type your secret message you would determine the setting. There are three rotors that can be configured. There were five rotors to choose from. 
 The order of the rotors could be altered as well. Each time a key was pressed one rotor rotated. Thus, the same key would result into different encryption. I.e. "AA" would be encrypted to "GE". This enhanced the security. Once one rotator made a whole revolution the next rotator rotated once. This system is similiar to the hands of a clock.
 
-<a href="url"><img src="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma-rotors.jpg" align="center" height="580" width="380" ></a>
+<a href="url"><img src="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma-rotors.jpg" align="center" height="380" width="580" ></a>
 
 Furthermore, there was a plugboard that swapped letters. Each letter could only have one connection to another letter. The connections could be configured as well.
 
-<a href="url"><img src="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma-plugboard.jpg" align="left" height="580" width="380" ></a>
+<a href="url"><img src="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma-plugboard.jpg" align="center" height="480" width="480" ></a>
 
 
 ## How To Use
@@ -56,7 +56,7 @@ Furthermore, there was a plugboard that swapped letters. Each letter could only 
 9. Encrypted Text
 
 
-<a href="url"><img src="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma-plugboard-how-to-use.PNG" align="center" height="580" width="380" ></a>
+<a href="url"><img src="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma-plugboard-how-to-use.PNG" align="center" height="480" width="580" ></a>
 
 1. Drag Connections Here to Delete Them
 2. Add Connections (only possible if there are free letters)
