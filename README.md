@@ -55,3 +55,10 @@ Furthermore, there was a plugboard that swapped letters. Each letter could only 
 8. Clear Text
 9. Encrypted Text
 
+
+<a href="url"><img src="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma-plugboard-how-to-use.PNG" align="left" height="580" width="380" ></a>
+
+1. Drag Connections Here to Delete Them
+2. Add Connections (only possible if there are free letters)
+3. Change Connections
+4. Navigate Back to Keyboard
