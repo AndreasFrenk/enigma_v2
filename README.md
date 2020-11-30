@@ -34,3 +34,5 @@ This project is meant to be a copy of the Enigma machine used by the Germans dur
 
 The basic idea was that before you type your secret message you would determine the setting. There are three rotors that can be configured. There were five rotors to choose from. 
 The order of the rotors could be altered as well. Each time a key was pressed one rotor rotated. Thus, the same key would result into different encryption. I.e. "AA" would be encrypted to "GE". This enhanced the security. 
+
+<a href="url"><img src="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma-rotors.jpg" align="left" height="580" width="380" ></a>
