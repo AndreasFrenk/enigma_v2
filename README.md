@@ -45,6 +45,6 @@ Furthermore, there was a plugboard that swapped letters. Each letter could only 
 ## How To Use
 
 
-
+<a href="url"><img src="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma-how-to-use.jpg" align="left" height="580" width="380" ></a>
 
 
