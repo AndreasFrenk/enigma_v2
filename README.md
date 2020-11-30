@@ -41,6 +41,9 @@ Furthermore, there was a plugboard that swapped letters. Each letter could only 
 
 <a href="url"><img src="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma-plugboard.jpg" align="center" height="380" width="580" ></a>
 
+Pictures from https://en.wikipedia.org/wiki/Enigma_machine && https://pixabay.com/photos/enigma-encryption-cryptologic-army-883925/. 
+(https://en.wikipedia.org/wiki/File:Enigma-plugboard.jpg)
+(https://en.wikipedia.org/wiki/File:Enigma_rotors_with_alphabet_rings.jpg)
 
 ## How To Use
 
