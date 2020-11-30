@@ -31,3 +31,5 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 This project is meant to a copy of the Enigma machine used by the Germans during World War II. It was an encryption device that allowed secret communication. 
 
 ![Alt text](./images/enigma.jpg?raw=true "Title")
+
+<a href="url"><img src="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma.jpg" align="left" height="48" width="48" ></a>
