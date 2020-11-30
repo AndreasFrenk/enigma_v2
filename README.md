@@ -62,3 +62,20 @@ Furthermore, there was a plugboard that swapped letters. Each letter could only 
 2. Add Connections (only possible if there are free letters)
 3. Change Connections
 4. Navigate Back to Keyboard
+
+## IMPORTANT
+Before you encrypt or decrypt a message, make sure to save or load the right setting. Otherwise, the machine will not work. You can also paste a whole a text into
+the input box. Note that the input is restricted to letters. In order to make the text more readable you can add spaces. Spaces will not be encrypted nor decrypted.
+If you want to upload settings make sure it is in the right format. You can download your current setting. This will be in a json format. 
+
+## Summary
+Encryption:
+1. Configure the settings
+2. Download the settings
+3. Type in your secret message
+4. Share your settings and your secret message
+
+Decryption:
+1. Upload the settings
+2. Type in the decrypted message (or just copy and paste it)
+3. Read the secret message
