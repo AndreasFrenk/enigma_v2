@@ -45,7 +45,7 @@ Furthermore, there was a plugboard that swapped letters. Each letter could only 
 ## How To Use
 
 
-<a href="url"><img src="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma-how-to-use.PNG" align="left" height="580" width="380" ></a>
+<a href="url"><img src="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma-how-to-use.PNG" align="center" height="580" width="380" ></a>
 
 1. & 2. & 3. Rotor Setting.
 4. Change Order of Rotors
@@ -56,7 +56,7 @@ Furthermore, there was a plugboard that swapped letters. Each letter could only 
 9. Encrypted Text
 
 
-<a href="url"><img src="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma-plugboard-how-to-use.PNG" align="left" height="580" width="380" ></a>
+<a href="url"><img src="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma-plugboard-how-to-use.PNG" align="center" height="580" width="380" ></a>
 
 1. Drag Connections Here to Delete Them
 2. Add Connections (only possible if there are free letters)
