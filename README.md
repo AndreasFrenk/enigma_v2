@@ -37,6 +37,14 @@ The order of the rotors could be altered as well. Each time a key was pressed on
 
 <a href="url"><img src="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma-rotors.jpg" align="left" height="580" width="380" ></a>
 
-Furthermore, there was a plugboard that swapped letters. 
+Furthermore, there was a plugboard that swapped letters. Each letter could only have one connection to another letter. The connections could be configured as well.
 
-<a href="url"><img src="https://en.wikipedia.org/wiki/Enigma_machine#/media/File:Enigma-plugboard.jpg" align="left" height="580" width="380" ></a>
+<a href="url"><img src="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma-plugboard.jpg" align="left" height="580" width="380" ></a>
+
+
+## How To Use
+
+
+
+
+
