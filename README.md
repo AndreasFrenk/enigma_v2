@@ -47,4 +47,11 @@ Furthermore, there was a plugboard that swapped letters. Each letter could only 
 
 <a href="url"><img src="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma-how-to-use.PNG" align="left" height="580" width="380" ></a>
 
+1. & 2. & 3. Rotor Setting.
+4. Change Order of Rotors
+5. Navigate to Plugboard
+6. Save current Settings
+7. Upload Settings
+8. Clear Text
+9. Encrypted Text
 
