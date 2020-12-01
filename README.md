@@ -60,7 +60,7 @@ Pictures from https://en.wikipedia.org/wiki/Enigma_machine && https://pixabay.co
 5. 8 Clear Text & 9 Encrypted Text
 
 
-<a href="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma-plugboard-how-to-use_v2.PNG"><img src="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma-plugboard-how-to-use.PNG" align="center" height="380" width="680" ></a>
+<a href="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma-plugboard-how-to-use_v2.PNG"><img src="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma-plugboard-how-to-use_v.PNG" align="center" height="380" width="680" ></a>
 
 1. Drag Connections Here to Delete Them
 2. Add Connections (only possible if there are free letters)
