@@ -52,7 +52,7 @@ Pictures from https://en.wikipedia.org/wiki/Enigma_machine && https://pixabay.co
 ## How To Use
 
 
-<a href="https://github.com/kryptoguy/enigma_v2/blob/main/images/enigma-how-to-use_v2.PNG"><img src="https://github.com/kryptoguy/enigma_v2/blob/main/images/Enigma-how-to-use_v2.PNG" align="center" height="380" width="680" ></a>
+<a href="https://github.com/kryptoguy/enigma_v2/blob/main/images/Enigma-how-to-use_v2.png"><img src="https://github.com/kryptoguy/enigma_v2/blob/main/images/Enigma-how-to-use_v2.png" align="center" height="380" width="680" ></a>
 
 1. 1 & 2 & 3 Rotor Setting. 4 Change Order of Rotors
 2. 5 Navigate to Plugboard
